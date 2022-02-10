@@ -1,12 +1,12 @@
-var menuManager = {pressDer: true, pressIzq: true};
-menuManager.LoadContent = function(){
+var menuManager = { pressDer: true, pressIzq: true };
+menuManager.LoadContent = function () {
     this.content = document.createElement("div");
     this.content.id = "content";
     this.divo = document.createElement("div");
     this.divo.id = "contentform";
     this.divpj = document.createElement("div");
     this.divpj.id = "personajes";
-    let span, img, h4;
+    let span, h4;
     h4 = document.createElement("h4");
     h4.id = "selectAplayer";
     h4.append("Select a player: ");
@@ -14,20 +14,21 @@ menuManager.LoadContent = function(){
     this.clear = document.createElement("div");
     this.clear.className = "clear";
     this.content.append(this.clear);
-    for(var i = 0; i < playerManager.pj.length; i++){
+    for (var i = 0; i < playerManager.pj.length; i++) {
+        let img
         span = document.createElement("span");
         img = document.createElement("img");
-        img.id = "pj_"+i;
+        img.id = "pj_" + i;
         img.alt = playerManager.pj[i]["pj"];
         img.src = playerManager.pj[i]["src"];
-        img.addEventListener("click", function(e){
+        img.addEventListener("click", function (e) {
             let pt = e.toElement;
             let selecteds = document.getElementsByClassName("selected");
-            for(let j = 0; j < selecteds.length; j++){
+            for (let j = 0; j < selecteds.length; j++) {
                 selecteds[j].className = "";
             }
-            window.location.hash = "#"+pt.id;
-            pt.className = "selected";
+            window.location.hash = "#"+img.id;
+            this.className = "selected";
         });
         span.append(img);
         this.divpj.append(span);
@@ -52,7 +53,7 @@ menuManager.LoadContent = function(){
     this.content.append(this.divo);
     this.content.append(this.clear);
     this.content.append(this.divpj);
-    document.body.addEventListener("keyup", function(event) {
+    document.body.addEventListener("keyup", function (event) {
         event.preventDefault();
         // el boton enter 
         if (event.keyCode === 13) {
@@ -62,92 +63,54 @@ menuManager.LoadContent = function(){
     });
 
     // evento del clic en el boton 
-    this.button.addEventListener("click", function(){
+    this.button.addEventListener("click", function () {
         let str = menuManager.inputText.value;
         str = str.trim();
-        if(str == "")
-            menuManager.spanError.innerHTML = "ERROR CAMPO VACIO";
-        else if(/.{9}/g.test(str))
-            menuManager.spanError.innerHTML = "ERROR 9 O MENOS CARACTERES";
-        else if(/\s/g.test(str))
-            menuManager.spanError.innerHTML = "ERROR HAY ESPACIOS";
-        else{
+        if (str == "")
+            menuManager.spanError.innerHTML = "EMPTY FIELD ERROR";
+        else if (/.{9}/g.test(str))
+            menuManager.spanError.innerHTML = "ERROR 9 OR LESS CHARACTERS";
+        else if (/\s/g.test(str))
+            menuManager.spanError.innerHTML = "ERROR THERE ARE SPACES";
+        else {
             let persona = document.getElementsByClassName("selected");
             let pj;
-            if(window.location.hash){
+            if (window.location.hash) {
                 let lel = window.location.hash.substring(1, window.location.hash.length);
                 pj = document.getElementById(lel).alt;
-            }else{
+            } else {
                 pj = "lion";
             }
-            if(persona.length != 0){
+            if (persona.length != 0) {
                 pj = persona[0].alt;
             }
-            if(animationManager.imagenes[pj]){
+            if (animationManager.imagenes[pj]) {
                 io.emit('user', str, pj);
                 buclePrincipal.screen = screenManager.screen.GAME;
                 menuManager.Destroy();
-            }else{
+            } else {
                 console.log("error imagen invalida ");
             }
         }
     });
     document.body.addEventListener("wheel", function (e) {
         menuManager.pressDer = e.wheelDelta < 0;
-        menuManager.pressIzq = e.wheelDelta > 0;  
+        menuManager.pressIzq = e.wheelDelta > 0;
     });
     $("body").append(this.content);
-    if(window.location.hash){
+    if (window.location.hash) {
         let lel = window.location.hash.substring(1, window.location.hash.length);
-        if(document.getElementById(lel)){
+        if (document.getElementById(lel)) {
             document.getElementById(lel).click();
         }
     }
 }
-menuManager.Update = function(){
-    if(this.pressDer){
-        let selecteds = document.getElementsByClassName("selected");
-        if(selecteds[0]){
-            let index = parseInt(selecteds[0].id.substr(3,selecteds[0].id.length));
-            index+=1;
-            if(document.getElementById("pj_"+index)){
-                document.getElementById("pj_"+index).click();
-                window.location.hash = '#pj_'+index;
-            }else{
-                document.getElementById("pj_0").click();
-                window.location.hash = '#pj_0';
-            }
-        }else{
-            document.getElementById("pj_0").click();
-        }
-        this.pressDer = false;
-    }
-    if(this.pressIzq){
-        let selecteds = document.getElementsByClassName("selected");
-        if(selecteds[0]){
-            let index = parseInt(selecteds[0].id.substr(3,selecteds[0].id.length));
-            index-=1;
-            if(document.getElementById("pj_"+index)){
-                document.getElementById("pj_"+index).click();
-                window.location.hash = '#pj_'+index;
-            }else{
-                index = 0;
-                while(document.getElementById("pj_"+index) != undefined){
-                    index+=1;
-                }
-                index-=1;
-                document.getElementById("pj_"+index).click();
-                window.location.hash = '#pj_'+index;
-            }
-        }else{
-            document.getElementById("pj_0").click();
-        }
-        this.pressIzq = false;
-    }
+menuManager.Update = function () {
+   
 }
-menuManager.UnLoadContent = function(){
+menuManager.UnLoadContent = function () {
     this.Destroy();
 }
-menuManager.Destroy = function(){
+menuManager.Destroy = function () {
     this.content.remove();
 }
