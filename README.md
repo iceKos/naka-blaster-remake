@@ -17,12 +17,12 @@ node server/app.js
 
 ### check list
 
-- [] sound backgroud
-- [] sound when drop a bomb
-- [] sound when bomb exploration
-- [] change player avatar and block style
-- [] add blackground cloud img
-- [] add process close area
-- [] add kick bomb function
-- [] add killfeed
+- [ ] sound backgroud
+- [ ] sound when drop a bomb
+- [ ] sound when bomb exploration
+- [ ] change player avatar and block style
+- [ ] add blackground cloud img
+- [ ] add process close area
+- [ ] add kick bomb function
+- [ ] add killfeed
 
