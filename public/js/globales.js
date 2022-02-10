@@ -1,7 +1,7 @@
 // variables globales
 var debug = {
-    hit:true,
-    info:true
+    hit: true,
+    info: true
 };
 var io = io.connect(),
     canvas = document.getElementById("myCanvas"),
@@ -19,14 +19,32 @@ function resizeCanvas() {
     canvas.height = window.innerHeight || document.documentElement.clientWidth || document.body.clientWidth;
     buclePrincipal.ctx.font = `1.1em 'Oswald', sans-serif`;
 }
+
+// TODO: Play sound music backgroud
+// canvas.addEventListener(
+//     "click",
+//     function (evt) {
+
+//         // console.log(music);
+//         // // if (!music.overworld.playing()) {
+//         // //     soundSetting = 1;
+//         // //     music.overworld.play();
+//         // // } else {
+//         // //     soundSetting = 0;
+//         // //     music.overworld.pause();
+//         // // }
+//     },
+//     false
+// );
+
 function getRndInteger(min, max) {
-    return Math.floor(Math.random() * (max - min + 1) ) + min;
+    return Math.floor(Math.random() * (max - min + 1)) + min;
 }
-io.on('connect_failed', function() {
+io.on('connect_failed', function () {
     console.log('Connect failed');
     io.connect();
 });
-io.on('reconnect', function(){
+io.on('reconnect', function () {
     location.reload();
 });
 io.on('disconnect', function () {

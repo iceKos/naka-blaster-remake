@@ -14,6 +14,7 @@ var favicon = require('serve-favicon');
 app.use('/css',express.static(path.resolve(__dirname + public + '/css'))); // direccion del css
 app.use('/js',express.static(path.resolve(__dirname + public + '/js'))); // direccion del javascript
 app.use('/img',express.static(path.resolve(__dirname + public + '/img'))); // direccion de las imagenes
+app.use("/music", express.static(path.resolve(__dirname + public + "/music")));
 app.use(favicon(path.join(__dirname + public + '/favicon.ico')));
 
 app.get('/',function(req,res){

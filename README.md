@@ -17,7 +17,7 @@ node server/app.js
 
 ### check list
 - [x] Fixed FPS to 60 frames
-- [ ] sound backgroud
+- [x] sound backgroud
 - [ ] sound when drop a bomb
 - [ ] sound when bomb exploration
 - [ ] change player avatar and block style

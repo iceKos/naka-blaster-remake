@@ -19,6 +19,7 @@ menuManager.LoadContent = function () {
         span = document.createElement("span");
         img = document.createElement("img");
         img.id = "pj_" + i;
+        img.className = "character";
         img.alt = playerManager.pj[i]["pj"];
         img.src = playerManager.pj[i]["src"];
         img.addEventListener("click", function (e) {
@@ -27,12 +28,14 @@ menuManager.LoadContent = function () {
             for (let j = 0; j < selecteds.length; j++) {
                 selecteds[j].className = "";
             }
-            window.location.hash = "#"+img.id;
+            window.location.hash = "#" + img.id;
             this.className = "selected";
         });
         span.append(img);
         this.divpj.append(span);
     }
+
+
     this.inputText = document.createElement("input");
     this.inputText.type = "text";
     this.inputText.id = "inputText";
@@ -61,6 +64,13 @@ menuManager.LoadContent = function () {
             menuManager.button.click();
         }
     });
+
+    // cut to game screen
+    setTimeout(() => {
+        io.emit('user', "Ice", "lion");
+        buclePrincipal.screen = screenManager.screen.GAME;
+        menuManager.Destroy();
+    }, 2000);
 
     // evento del clic en el boton 
     this.button.addEventListener("click", function () {
@@ -98,6 +108,8 @@ menuManager.LoadContent = function () {
         menuManager.pressIzq = e.wheelDelta > 0;
     });
     $("body").append(this.content);
+
+
     if (window.location.hash) {
         let lel = window.location.hash.substring(1, window.location.hash.length);
         if (document.getElementById(lel)) {
@@ -106,7 +118,7 @@ menuManager.LoadContent = function () {
     }
 }
 menuManager.Update = function () {
-   
+
 }
 menuManager.UnLoadContent = function () {
     this.Destroy();
