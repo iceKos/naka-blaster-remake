@@ -153,6 +153,8 @@ playerManager.mover = function(){
     if(animationManager.imagenes != null && this.personajes[this.id]!= null){
         
         let solido;
+
+        // MOVE RIFGT
         if((keys[68] || keys[39] ) && this.personajes[this.id].mov){
             solido = playerManager.solido(this.personajes[this.id].vel , 0, this.personajes[this.id]);
             if(!solido.s)
@@ -170,7 +172,10 @@ playerManager.mover = function(){
                 this.emitStop = true;
             }
         }
+
+        // MOVE LEFT
         else if((keys[65] || keys[37] )  && this.personajes[this.id].mov){
+            
             solido = playerManager.solido(-this.personajes[this.id].vel , 0, this.personajes[this.id]);
             if(!solido.s)
             {
@@ -187,6 +192,7 @@ playerManager.mover = function(){
                 this.emitStop = true;
             }
         }
+        // MOVE TOP
         else if((keys[87] || keys[38] ) && this.personajes[this.id].mov){
             solido = playerManager.solido(0 , -this.personajes[this.id].vel, this.personajes[this.id]);
             if(!solido.s)
@@ -204,6 +210,7 @@ playerManager.mover = function(){
                 this.emitStop = true;
             }
         }
+        // MOVE BOTTOM
         else if((keys[83] || keys[40] ) && this.personajes[this.id].mov){
             solido = playerManager.solido(0 , this.personajes[this.id].vel, this.personajes[this.id]);
             if(!solido.s)
@@ -221,8 +228,11 @@ playerManager.mover = function(){
                 this.emitStop = true;
             }
         }else{
+            
+            // EVENT STOP MOVE
             this.personajes[this.id].animaciones.stop = true;
             if(this.emitStop){
+                
                 this.pack = {
                     x: this.personajes[this.id].x,
                     y: this.personajes[this.id].y,
