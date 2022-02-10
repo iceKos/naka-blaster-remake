@@ -5,7 +5,8 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server/app.js"
+    "start": "node server/app.js",
+    "start:dev": "nodemon server/app.js"
   },
   "repository": {
     "type": "git",
@@ -24,5 +25,8 @@
     "express": "^4.15.2",
     "serve-favicon": "^2.5.0",
     "socket.io": "^2.1.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.15"
   }
 }

@@ -16,7 +16,7 @@ node server/app.js
 [MIT](/LICENSE)
 
 ### check list
-
+- [x] Fixed FPS to 60 frames
 - [ ] sound backgroud
 - [ ] sound when drop a bomb
 - [ ] sound when bomb exploration
