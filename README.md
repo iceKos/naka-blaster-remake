@@ -27,4 +27,5 @@ node server/app.js
 - [ ] add kick bomb function
 - [ ] add killfeed
 - [x] fix bug when dead have to cannot drop bomb again
+- [ ] player AFK has other player kill but never die
 

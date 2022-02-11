@@ -16,13 +16,16 @@ var buclePrincipal = {
                 buclePrincipal.iterar
             );
         }, 1000 / buclePrincipal.static_fps);
+        // buclePrincipal.idEjecucion = window.requestAnimationFrame(
+        //     buclePrincipal.iterar
+        // );
         buclePrincipal.limpiar();
         buclePrincipal.Update(registroTemporal);
         buclePrincipal.Draw();
         if (registroTemporal - buclePrincipal.ultimoRegistro > 999) {
             buclePrincipal.ultimoRegistro = registroTemporal;
             //console.log("APS: "+ buclePrincipal.aps + " | FPS: "+ buclePrincipal.fps);
-            buclePrincipal.dibujarFps = "APS: " + buclePrincipal.aps + " | FPS: " + buclePrincipal.fps + " | PING: " + buclePrincipal.ping;
+            buclePrincipal.dibujarFps = "APS: " + buclePrincipal.aps + " | FPS: " + buclePrincipal.fps + " | PING: " + buclePrincipal.ping + " | SOLID: " + hudManager.solid;
             buclePrincipal.aps = 0;
             buclePrincipal.maxFps = buclePrincipal.fps;
             buclePrincipal.fps = 0;

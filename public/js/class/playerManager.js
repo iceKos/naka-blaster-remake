@@ -24,11 +24,13 @@ playerManager.Update = function () {
 
 // check object solid
 playerManager.solido = function (x, y, player) {
+
     let esSolido = false, temporal;
     var fix = false;
     temporal = player.hitbox.copiar();
     temporal.x += x;
     temporal.y += y;
+
     let llaves = Object.keys(bombManager.bombs);
     let element;
     // check move hit bomb or not
@@ -43,15 +45,16 @@ playerManager.solido = function (x, y, player) {
     }
 
     // check move to hit block or not
+
+ 
     if (!esSolido && !player.atra) {
         llaves = Object.keys(blockManager.blocks);
         for (let i = 0; i < llaves.length; i++) {
             element = blockManager.blocks[llaves[i]];
+
             if (element.chocarCon(temporal)) {
                 esSolido = true;
                 break;
-            }else{
-                // console.log(element,temporal);
             }
         }
     }
@@ -67,10 +70,13 @@ playerManager.solido = function (x, y, player) {
             }
         }
     }
+
+
     if (esSolido) {
         esSolido = playerManager.fixCorner(x, y, player.atra);
         fix = true;
     }
+    hudManager.solid = esSolido
     return { f: fix, s: esSolido };
 };
 playerManager.fixCorner = function (dirX, dirY, atra) {
@@ -166,9 +172,11 @@ playerManager.mover = function () {
         // MOVE RIFGT
         if ((keys[68] || keys[39]) && this.personajes[this.id].mov) {
             solido = playerManager.solido(this.personajes[this.id].vel, 0, this.personajes[this.id]);
+            // solido = playerManager.solido(200, 0, this.personajes[this.id]);
             if (!solido.s) {
                 this.personajes[this.id].dir = dir.DERECHA;
                 this.personajes[this.id].animaciones.stop = false;
+
                 if (!solido.f) this.personajes[this.id].mov(this.personajes[this.id].vel, 0);
                 this.pack = {
                     x: this.personajes[this.id].x,

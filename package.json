@@ -23,9 +23,10 @@
   "license": "MIT",
   "dependencies": {
     "express": "^4.15.2",
+    "howler": "^2.2.3",
     "serve-favicon": "^2.5.0",
     "socket.io": "^2.1.1",
-    "howler": "^2.2.3"
+    "underscore": "^1.13.2"
   },
   "devDependencies": {
     "nodemon": "^2.0.15"

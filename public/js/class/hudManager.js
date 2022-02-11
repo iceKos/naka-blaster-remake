@@ -1,6 +1,7 @@
 var hudManager = {
     lifes: 0,
     kills: 0,
+    solid:false,
     leaderboard: []
 };
 hudManager.Update = function () {
