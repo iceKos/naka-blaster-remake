@@ -18,8 +18,8 @@ node server/app.js
 ### check list
 - [x] Fixed FPS to 60 frames
 - [x] sound backgroud
-- [ ] sound when drop a bomb
-- [ ] sound when bomb exploration
+- [x] sound when drop a bomb
+- [x] sound when bomb exploration
 - [ ] change player avatar and block style
 - [ ] reset skill after dead
 - [ ] add blackground cloud img

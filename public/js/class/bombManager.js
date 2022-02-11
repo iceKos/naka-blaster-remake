@@ -93,6 +93,8 @@ bombManager.Update = function(){
             x = Math.floor(playerManager.personajes[playerManager.id].hitbox.x/32) * 32;
             y = Math.floor(playerManager.personajes[playerManager.id].hitbox.y/32) * 32;
             io.emit('newBomb', {x:x , y: y});
+            // TODO: have to play sound drop bomb
+            place.play();
         }
     }
 };
@@ -109,6 +111,8 @@ bombManager.colocarBomba = function(data){
 
 bombManager.temporizador =  function(bomba, coloca){
     if(bombManager.bombs.indexOf(bomba) != -1){
+        // TODO: Play sound bomb explode
+        explode.play();
         delete bombManager.bombs[bombManager.bombs.indexOf(bomba)];
         // explosión del centro
         var bX = bomba.x,  bY = bomba.y, bAncho = bomba.hitbox.ancho, bAlto = bomba.hitbox.alto;
@@ -262,6 +266,7 @@ bombManager.SobreBomb = function(hit){
 }
 
 bombManager.tiempoExplo =  function(explo){
+    
     let index = bombManager.explosions.indexOf(explo);
     if(index != -1){
         delete bombManager.typeExplo[index];
