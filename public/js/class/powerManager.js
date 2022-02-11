@@ -119,6 +119,8 @@ powerManager.setPower = (indexPower, indexPlayer) => {
         break;
     }
 };
+
+//upgrade Power
 io.on('actualizarPower', function(data, index){
     let player = playerManager.personajes[data.id];
     powerManager.setPower(index, player.id);

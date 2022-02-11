@@ -16,6 +16,7 @@ camera.Update = function (){
         this.h = canvas.height;
     }
     if(this.player){
+        
         this.x = this.player.hitbox.x - (this.w / 2);
         this.y = this.player.hitbox.y - (this.h / 2);
     }

@@ -1,19 +1,19 @@
 var screenManager = {
-    screen:{
+    screen: {
         GAME: "inGame",
         LOADING: "loading",
         MENU: "menu",
         DESCO: "desconectado"
     },
-    check:{
+    check: {
         img: false,
         block: false,
         power: false
     }
 };
 
-screenManager.LoadContent = function(screen){
-    switch(screen){
+screenManager.LoadContent = function (screen) {
+    switch (screen) {
         case screenManager.screen.DESCO:
             let span = document.createElement("span");
             span.id = "reconectar";
@@ -30,18 +30,29 @@ screenManager.LoadContent = function(screen){
             $("body").append(pan);
             blockManager.LoadContent();
             animationManager.LoadContent(
-                function(){
+                function () {
                     screenManager.check.img = true;
                 });
             powerManager.LoadContent();
             break;
     }
 };
-screenManager.Draw = function(ctx, screen){
-    switch(screen){
+screenManager.Draw = function (ctx, screen) {
+
+    switch (screen) {
+
         case screenManager.screen.GAME:
+
             ctx.save();
-            ctx.transform(1,0,0,1,-camera.x,-camera.y);
+            const scale = 2;
+            ctx.transform(
+                scale,
+                0,
+                0,
+                scale,
+                -camera.x * scale - camera.w / 2,
+                -camera.y * scale - camera.h / 2
+            );
             blockManager.Draw(ctx);
             powerManager.Draw(ctx);
             bombManager.Draw(ctx);
@@ -51,10 +62,10 @@ screenManager.Draw = function(ctx, screen){
             break;
     }
 };
-screenManager.Update = function(screen, callback){
-    switch(screen){
+screenManager.Update = function (screen, callback) {
+    switch (screen) {
         case screenManager.screen.LOADING:
-            if(screenManager.cheking()){
+            if (screenManager.cheking()) {
                 document.getElementById("conectando").remove();
                 callback(screenManager.screen.MENU);
                 console.log("¡Cargado!");
@@ -72,28 +83,28 @@ screenManager.Update = function(screen, callback){
             break;
     }
 };
-screenManager.UnLoadContent = function(screen){
-    switch(screen){
+screenManager.UnLoadContent = function (screen) {
+    switch (screen) {
         case screenManager.screen.MENU:
             menuManager.UnLoadContent();
             break;
     }
 }
-screenManager.cheking = function(){
+screenManager.cheking = function () {
     return this.check.img && this.check.block && this.check.power;
 }
 
-io.on('inicio', function(){
+io.on('inicio', function () {
     var img = document.createElement("img");
     img.src = animationManager.imagenes["dead"][0].src;
-    img.id = "imagenDead";  
+    img.id = "imagenDead";
     $("body").append(img);
     setTimeout(
-        function(){
+        function () {
             img.remove();
             location.reload();
             window.location.href = window.location;
             window.location.reload();
         }, 4000);
-        
+
 });

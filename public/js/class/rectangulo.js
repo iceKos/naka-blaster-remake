@@ -17,6 +17,8 @@ class rectangulo{
     copiar(){
         return new rectangulo(this.x, this.y, this.ancho, this.alto);
     }
+
+    // Check hit to other object
     chocarCon(otherobj) {
        var izquierda = this.x;
        var derecha = this.x + (this.ancho);

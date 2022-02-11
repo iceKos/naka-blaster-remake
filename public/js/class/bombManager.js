@@ -83,8 +83,9 @@ bombManager.Update = function(){
         });
     });
     if(keys[32] && playerManager.personajes[playerManager.id]!= null){
+        
         let tocar = bombManager.SobreBomb(playerManager.personajes[playerManager.id].hitbox);
-        if(!tocar && !this.puesta && playerManager.personajes[playerManager.id].numBomb > 0)
+        if(!tocar && !this.puesta && playerManager.personajes[playerManager.id].numBomb > 0 && playerManager.personajes[playerManager.id].morir == false )
         {
             playerManager.personajes[playerManager.id].numBomb -= 1;
             this.puesta = true;
