@@ -31,23 +31,28 @@ class player {
         this.animaciones = new animation(this.imagenes, this.speedImage);
     }
     Update() {
+
+        // down
         if (this.dir == dir.ABAJO) {
-            this.animaciones.Update(0, 2);
+            this.animaciones.Update(0, 5);
         }
+        // up
         else if (this.dir == dir.ARRIBA) {
-            this.animaciones.Update(3, 5);
+            this.animaciones.Update(18, 23);
         }
+        // left
         else if (this.dir == dir.IZQUIERDA) {
-            this.animaciones.Update(6, 8);
+            this.animaciones.Update(12, 17);
         }
+        // right
         else if (this.dir == dir.DERECHA) {
-            this.animaciones.Update(15, 17);
+            this.animaciones.Update(6, 11);
         } else if (this.animaciones != null) {
             this.animaciones.Update(0, 0);
         }
         if (this.dirAnterior != this.dir) {
             this.animaciones.index++;
-            this.animaciones.frames = this.animaciones.index + 0.5;
+            this.animaciones.frames = this.animaciones.index;
         }
         this.dirAnterior = this.dir;
     }
@@ -61,15 +66,15 @@ class player {
                     let text = "" + this.user;
                     let width = ctx.measureText(text).width;
                     ctx.fillStyle = 'rgba(0,0,0,0.6)';
-                    ctx.fillRect((this.x-((width/2))) +(32/2), this.y - 17, width + 10, 21);
+                    ctx.fillRect((this.x - ((width / 2))) + (32 / 2), this.y - 17, width + 10, 21);
                     if (playerManager.id == this.id) {
                         ctx.fillStyle = '#3aafff';
                     }
                     else {
                         ctx.fillStyle = '#FFFFFF';
                     }
-                    ctx.fillText(text, (this.x-((width/2))) +(32/2)+5, this.y);
-                    this.animaciones.Draw(ctx, this.x, this.y);
+                    ctx.fillText(text, (this.x - ((width / 2))) + (32 / 2) + 5, this.y);
+                    this.animaciones.Draw(ctx, this.x + 2.5, this.y, 500, 500, "player");
                     if (debug.hit) this.hitbox.Draw(ctx);
                 } else {
                     console.log("Error, no se ha cargado las imagenes al objeto: ");

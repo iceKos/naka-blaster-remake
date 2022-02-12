@@ -34,6 +34,7 @@ screenManager.LoadContent = function (screen) {
                     screenManager.check.img = true;
                 });
             powerManager.LoadContent();
+            cloudManager.LoadContent();
             break;
     }
 };
@@ -53,12 +54,14 @@ screenManager.Draw = function (ctx, screen) {
                 -camera.x * scale - camera.w / 2,
                 -camera.y * scale - camera.h / 2
             );
+            cloudManager.Draw(ctx);
             blockManager.Draw(ctx);
             powerManager.Draw(ctx);
             bombManager.Draw(ctx);
-            playerManager.Draw(ctx);
+            playerManager.Draw(ctx);            
             ctx.restore();
             hudManager.Draw(ctx);
+
             break;
     }
 };
@@ -75,11 +78,13 @@ screenManager.Update = function (screen, callback) {
             menuManager.Update();
             break;
         case this.screen.GAME:
+            cloudManager.Update();
             blockManager.Update();
             powerManager.Update();
             playerManager.Update();
             bombManager.Update();
             hudManager.Update();
+
             break;
     }
 };

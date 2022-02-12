@@ -58,7 +58,7 @@ io.on('mapa', function (data, mapa_2d) {
         }
 
         if (vector[i] == 3) {
-            blockManager.animationBlocks[i] = new animation(animationManager.imagenes["block"], 0.25);
+            blockManager.animationBlocks[i] = new animation(animationManager.imagenes["block1"], 0.25);
             blockManager.animationBlocks[i].stop = true;
             blockManager.blocks[i] = new rectangulo(posX, posY, blockManager.w, blockManager.h);
             blockManager.blocks[i].dead = false;
@@ -80,8 +80,9 @@ io.on('mapa', function (data, mapa_2d) {
     blockManager.blocks2D = mapa_2d
 });
 io.on('destroyBlock', function (data) {
+    if (blockManager.blocks[data]) {
+        blockManager.blocks[data].dead = true;
+        blockManager.animationBlocks[data].stop = false;
 
-    blockManager.blocks[data].dead = true;
-    blockManager.animationBlocks[data].stop = false;
-    
+    }
 });

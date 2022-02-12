@@ -22,8 +22,9 @@ menuManager.LoadContent = function () {
         img.className = "character";
         img.alt = playerManager.pj[i]["pj"];
         img.src = playerManager.pj[i]["src"];
+        img.style.width = "80px";
+        img.style.height = "80px";
         img.addEventListener("click", function (e) {
-            let pt = e.toElement;
             let selecteds = document.getElementsByClassName("selected");
             for (let j = 0; j < selecteds.length; j++) {
                 selecteds[j].className = "";
@@ -67,10 +68,10 @@ menuManager.LoadContent = function () {
 
     // cut to game screen
     setTimeout(() => {
-        io.emit('user', "Apirat Noiaroom", "lion");
+        io.emit('user', "Apirat Noiaroom", "zombie");
         buclePrincipal.screen = screenManager.screen.GAME;
         menuManager.Destroy();
-    }, 2000);
+    }, 5000);
 
     // evento del clic en el boton 
     this.button.addEventListener("click", function () {
@@ -89,7 +90,7 @@ menuManager.LoadContent = function () {
                 let lel = window.location.hash.substring(1, window.location.hash.length);
                 pj = document.getElementById(lel).alt;
             } else {
-                pj = "lion";
+                pj = "zombie";
             }
             if (persona.length != 0) {
                 pj = persona[0].alt;
