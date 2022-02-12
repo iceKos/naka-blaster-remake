@@ -3,7 +3,6 @@ var powerManager = {
     deletePowerIndex: [],
     pos_powers: [],
     type: {
-        atra: 0,
         flame: 1,
         bomb: 2,
         speed: 3
@@ -19,9 +18,6 @@ powerManager.Draw = function (ctx) {
         if (camera.x - 32 < power.x && camera.x + camera.w > power.x &&
             camera.y - 32 < power.y && camera.y + camera.h > power.y) {
             switch (power.type) {
-                case this.type.atra:
-                    ctx.drawImage(imgPower[power.type], power.x, power.y);
-                    break;
                 case this.type.flame:
                     ctx.drawImage(imgPower[power.type], power.x, power.y);
                     break;
@@ -116,9 +112,6 @@ powerManager.setPower = (indexPower, indexPlayer) => {
     let player = playerManager.personajes[indexPlayer];
     if (powerManager.powers[indexPower]) {
         switch (powerManager.powers[indexPower].type) {
-            case powerManager.type.atra:
-                player.atra = true;
-                break;
             case powerManager.type.flame:
                 player.largeBomb += 1;
                 break;
