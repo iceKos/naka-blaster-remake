@@ -22,7 +22,7 @@ node server/app.js
 - [x] sound when bomb exploration
 - [x] change player avatar and block style
 - [ ] reset skill after dead
-- [ ] add blackground cloud img
+- [x] add blackground cloud animation
 - [ ] add process close area
 - [ ] add kick bomb function
 - [ ] add killfeed
