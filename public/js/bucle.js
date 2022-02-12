@@ -48,7 +48,7 @@ var buclePrincipal = {
         buclePrincipal.fps++;
     },
     limpiar: function () {
-        buclePrincipal.ctx.fillStyle = "#8e44ad";
+        buclePrincipal.ctx.fillStyle = "#4ccfe5";
         buclePrincipal.ctx.fillRect(0, 0, canvas.width, canvas.height);
     }
 };

@@ -91,8 +91,8 @@ bombManager.Update = function () {
             this.puesta = true;
             this.space_bar = true
             let x, y;
-            x = Math.floor(playerManager.personajes[playerManager.id].hitbox.x / 32) * 32;
-            y = Math.floor(playerManager.personajes[playerManager.id].hitbox.y / 32) * 32;
+            x = (Math.floor((playerManager.personajes[playerManager.id].hitbox.x / 32) + 0.4) * 32);
+            y = (Math.floor((playerManager.personajes[playerManager.id].hitbox.y / 32) + 0.35) * 32);
             io.emit('newBomb', { x: x, y: y });
             // TODO: have to play sound drop bomb
             place.play();
