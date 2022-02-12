@@ -68,7 +68,7 @@ class player {
                     else {
                         ctx.fillStyle = '#FFFFFF';
                     }
-                    ctx.fillText(text, (this.x-((width/2))) +(32/2), this.y);
+                    ctx.fillText(text, (this.x-((width/2))) +(32/2)+5, this.y);
                     this.animaciones.Draw(ctx, this.x, this.y);
                     if (debug.hit) this.hitbox.Draw(ctx);
                 } else {
