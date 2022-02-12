@@ -67,7 +67,7 @@ menuManager.LoadContent = function () {
 
     // cut to game screen
     setTimeout(() => {
-        io.emit('user', "Ice", "lion");
+        io.emit('user', "Apirat Noiaroom", "lion");
         buclePrincipal.screen = screenManager.screen.GAME;
         menuManager.Destroy();
     }, 2000);
