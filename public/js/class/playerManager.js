@@ -3,7 +3,8 @@ var playerManager = {
     pj: [],
     id: 0,
     emitStop: true,
-    pack: null
+    pack: null,
+    status_kick: false,
 };
 playerManager.Draw = function (ctx) {
     this.personajes.forEach(element => {
@@ -22,15 +23,100 @@ playerManager.Update = function () {
     });
 }
 
+// Kick bomb Function
+playerManager.kickBomb = function (bomb, lastHitbox) {
+    var bombPosition = {
+        x: Math.floor(bomb.hitbox.x / 32),
+        y: Math.floor(bomb.hitbox.y / 32),
+    };
+
+    var lastHitboxPosition = {
+        x: Math.floor(lastHitbox.x / 32),
+        y: Math.floor(lastHitbox.y / 32),
+    };
+
+    // clear kick status can kick again
+    setTimeout(() => {
+        this.status_kick = false;
+    }, 500);
+
+    if (lastHitboxPosition.y == bombPosition.y) {
+        if (lastHitboxPosition.x < bombPosition.x) {
+            // kick left to right
+            io.emit("kickBomb", {
+                currentPosition: {
+                    x: bombPosition.x * 32,
+                    y: bombPosition.y * 32,
+                },
+                nextPosition: {
+                    x: (bombPosition.x + 1) * 32,
+                    y: bombPosition.y * 32,
+                },
+                direction: "LEFT_TO_RIGHT",
+                bombId: bomb.id
+            });
+        }
+        if (lastHitboxPosition.x > bombPosition.x) {
+            // kick right to left
+            io.emit("kickBomb", {
+                currentPosition: {
+                    x: bombPosition.x * 32,
+                    y: bombPosition.y * 32,
+                },
+                nextPosition: {
+                    x: (bombPosition.x - 1) * 32,
+                    y: bombPosition.y * 32,
+                },
+                direction: "RIGHT_TO_LEFT",
+                bombId: bomb.id
+            });
+        }
+    }
+
+    if (lastHitboxPosition.x == bombPosition.x) {
+        if (lastHitboxPosition.y < bombPosition.y) {
+            // kick top to bottom
+            io.emit("kickBomb", {
+                currentPosition: {
+                    x: bombPosition.x * 32,
+                    y: bombPosition.y * 32,
+                },
+                nextPosition: {
+                    x: bombPosition.x * 32,
+                    y: (bombPosition.y + 1) * 32,
+                },
+                direction: "TOP_TO_BOTTOM",
+                bombId: bomb.id
+            });
+        }
+        if (lastHitboxPosition.y > bombPosition.y) {
+            // kick bottom to top
+            io.emit("kickBomb", {
+                currentPosition: {
+                    x: bombPosition.x * 32,
+                    y: bombPosition.y * 32,
+                },
+                nextPosition: {
+                    x: bombPosition.x * 32,
+                    y: (bombPosition.y - 1) * 32,
+                },
+                direction: "BOTTOM_TO_TOP",
+                bombId: bomb.id
+            });
+        }
+    }
+
+}
+
 // check object solid
 playerManager.solido = function (x, y, player) {
 
     let esSolido = false, temporal;
     var fix = false;
     temporal = player.hitbox.copiar();
+    var lastHitbox = { x: temporal.x, y: temporal.y };
     temporal.x += x;
     temporal.y += y;
-
     let llaves = Object.keys(bombManager.bombs);
     let element;
     // check move hit bomb or not
@@ -38,7 +124,21 @@ playerManager.solido = function (x, y, player) {
         element = bombManager.bombs[llaves[i]];
         if (!element.recienColocada) {
             esSolido = element.hitbox.chocarCon(temporal);
-            if (esSolido) break;
+            if (esSolido) {
+                // if bomb status kick == true can pass bomb 
+                if (element.kick_status == true) {
+                    esSolido = false
+                    break;
+                }
+                if (this.status_kick == false && element.kick_status == false) {
+                    element.kick_status = true
+                    this.status_kick = true;
+                    this.kickBomb(element, lastHitbox);
+                }
+                break;
+            }
+
+
         }
         else if (!element.hitbox.chocarCon(temporal))
             element.recienColocada = false;
@@ -46,7 +146,7 @@ playerManager.solido = function (x, y, player) {
 
     // check move to hit block or not
 
- 
+
     if (!esSolido && !player.atra) {
         llaves = Object.keys(blockManager.blocks);
         for (let i = 0; i < llaves.length; i++) {
