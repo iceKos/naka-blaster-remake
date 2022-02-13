@@ -40,3 +40,8 @@ var shieldHit = new Howl({
 })
 
 
+var soundKickBomb = new Howl({
+  src: ['/music/kick_bomb_sound.m4a'],
+  loop: false,
+  volume: 0.3,
+})

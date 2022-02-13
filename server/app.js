@@ -335,7 +335,7 @@ io.on('connection', function (socket) {
             if (getRndInteger(0, 4) >= 4) {
                 let ran = getRndInteger(0, 24);
                 let typePower;
-                if (ran < 1) typePower = 0;
+                if (ran < 1) typePower = 1;
                 else if (ran <= 15) typePower = 1;
                 else if (ran <= 20) typePower = 2;
                 else if (ran <= 24) typePower = 3;

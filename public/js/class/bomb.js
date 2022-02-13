@@ -16,7 +16,7 @@ class bomb {
         this.timestamp = new Date().getTime()
         this.kick_status = false
         this.move_when_kick = false
-        this.moveSpeed = 5
+        this.moveSpeed = 6
         this.nextPosition = {
             x: null,
             y: null
@@ -42,10 +42,13 @@ class bomb {
                     // change only y +
                     this.y += this.moveSpeed
                     this.hitbox.y = this.y
+
+
                     if (this.y >= this.nextPosition.y) {
+                        this.y = this.nextPosition.y
+                        this.hitbox.y = this.y
                         this.kick_status = false
                         this.move_when_kick = false
-                        this.moveSpeed = 5
                         this.nextPosition = {
                             x: null,
                             y: null
@@ -58,10 +61,14 @@ class bomb {
                     // change only y -
                     this.y -= this.moveSpeed
                     this.hitbox.y = this.y
+
+
+
                     if (this.y <= this.nextPosition.y) {
+                        this.y = this.nextPosition.y
+                        this.hitbox.y = this.y
                         this.kick_status = false
                         this.move_when_kick = false
-                        this.moveSpeed = 5
                         this.nextPosition = {
                             x: null,
                             y: null
@@ -74,10 +81,14 @@ class bomb {
                     // change only x +
                     this.x += this.moveSpeed
                     this.hitbox.x = this.x
+
+
+
                     if (this.x >= this.nextPosition.x) {
+                        this.x = this.nextPosition.x
+                        this.hitbox.x = this.x
                         this.kick_status = false
                         this.move_when_kick = false
-                        this.moveSpeed = 5
                         this.nextPosition = {
                             x: null,
                             y: null
@@ -90,10 +101,14 @@ class bomb {
                     // change only x -
                     this.x -= this.moveSpeed
                     this.hitbox.x = this.x
+
+
+
                     if (this.x <= this.nextPosition.x) {
+                        this.x = this.nextPosition.x
+                        this.hitbox.x = this.x
                         this.kick_status = false
                         this.move_when_kick = false
-                        this.moveSpeed = 5
                         this.nextPosition = {
                             x: null,
                             y: null

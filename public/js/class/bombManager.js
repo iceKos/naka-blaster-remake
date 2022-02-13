@@ -298,7 +298,7 @@ io.on('newBomb', function (data) {
 });
 
 io.on("kickBomb", function ({ currentPosition, nextPosition, direction, bombId }) {
-    console.log("kickBomb", currentPosition, nextPosition, direction, bombId);
+
 
     bombManager.bombs = bombManager.bombs.filter(x => x != null)
     var findIndexBomById = bombManager.bombs.findIndex(bomb => {
@@ -306,6 +306,7 @@ io.on("kickBomb", function ({ currentPosition, nextPosition, direction, bombId }
     })
 
     if (findIndexBomById >= 0) {
+        soundKickBomb.play()
         var bomb = bombManager.bombs[findIndexBomById]
         bomb.move_when_kick = true
         bomb.nextPosition = {
@@ -317,5 +318,5 @@ io.on("kickBomb", function ({ currentPosition, nextPosition, direction, bombId }
         bombManager.bombs[findIndexBomById] = bomb
     }
 
-    
+
 })
