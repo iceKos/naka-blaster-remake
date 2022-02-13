@@ -97,14 +97,14 @@ class player {
                     let text = "" + this.user;
                     let width = ctx.measureText(text).width;
                     ctx.fillStyle = 'rgba(0,0,0,0.6)';
-                    ctx.fillRect((this.x - ((width / 2))) + (32 / 2), this.y - 17, width + 10, 21);
+                    ctx.fillRect((this.x - ((width / 2))) + (32 / 2), this.y - 25, width + 10, 21);
                     if (playerManager.id == this.id) {
                         ctx.fillStyle = '#3aafff';
                     }
                     else {
                         ctx.fillStyle = '#FFFFFF';
                     }
-                    ctx.fillText(text, (this.x - ((width / 2))) + (32 / 2) + 5, this.y);
+                    ctx.fillText(text, (this.x - ((width / 2))) + (32 / 2) + 5, this.y-8);
                     this.animaciones.Draw(ctx, this.x + 2.5, this.y, 500, 500, "player");
                     if (this.undead == true) {
                         this.shieldAnimation.Draw(ctx, this.x, this.y, 500, 500, "shield");
