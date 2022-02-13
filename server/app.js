@@ -148,7 +148,7 @@ io.on('connection', function (socket) {
                 id: p.id,
                 x: p.x,
                 y: p.y,
-                morir: p.morir,
+                dead: p.dead,
                 dir: p.dir,
                 animaciones: { stop: data.animaciones.stop }
             };
@@ -222,15 +222,15 @@ io.on('connection', function (socket) {
             socket.broadcast.emit('destroyBlock', data);
         }
     });
-    socket.on('murio', function (id) {
+    socket.on('dead', function (id) {
         var player = getPlayerID(id);
         if (player) {
-            player.morir = true;
+            player.dead = true;
             if (id == socket.player.id) {
                 socket.lifes -= 1;
                 socket.emit('lifes', socket.lifes);
             }
-            io.emit('murio', player.id);
+            io.emit('dead', player.id);
         }
     });
     socket.on('delete', function () {
@@ -244,7 +244,7 @@ io.on('connection', function (socket) {
                 }
                 socket.emit('inicio');
             } else {
-                socket.player.morir = false;
+                socket.player.dead = false;
                 let c = posicionRandom();
                 cambiarPos(c.x, c.y, socket.player);
                 setTimeout(
@@ -259,8 +259,8 @@ io.on('connection', function (socket) {
             socket.connect();
         else
             if (socket.player) {
-                socket.player.morir = true;
-                socket.broadcast.emit('murio', socket.player.id);
+                socket.player.dead = true;
+                socket.broadcast.emit('dead', socket.player.id);
                 delete socket.player;
                 let leader = getLeaderBoard();
                 if (server.leaderboard != leader) {

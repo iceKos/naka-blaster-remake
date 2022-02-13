@@ -36,7 +36,7 @@ hudManager.Draw = function (ctx) {
             ctx.fillText(`ID : ${my_player.id}`, 5, canvas.height - 450);
             ctx.fillText(`x : ${my_player.hitbox.x}`, 5, canvas.height - 400);
             ctx.fillText(`y : ${my_player.hitbox.y}`, 5, canvas.height - 350);
-            ctx.fillText(`dead : ${my_player.morir}`, 5, canvas.height - 300);
+            ctx.fillText(`dead : ${my_player.dead}`, 5, canvas.height - 300);
             ctx.fillText(`speed : ${my_player.vel}`, 5, canvas.height - 250);
             ctx.fillText(`Num Bomb : ${my_player.numBomb}`, 5, canvas.height - 200);
             ctx.fillText(
@@ -61,7 +61,7 @@ hudManager.Draw = function (ctx) {
             if (playerManager.personajes[i]) {
                 ctx.fillStyle = "#FFFFFF";
                 ctx.fillText(
-                    `ID : ${playerManager.personajes[i].id} , dead : ${playerManager.personajes[i].morir}`,
+                    `ID : ${playerManager.personajes[i].id} , dead : ${playerManager.personajes[i].dead}`,
                     canvas.width - 150,
                     start_debug_y
                 );

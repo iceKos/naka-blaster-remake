@@ -76,7 +76,6 @@ playerManager.solido = function (x, y, player) {
         esSolido = playerManager.fixCorner(x, y, player.atra);
         fix = true;
     }
-    hudManager.solid = esSolido
     return { f: fix, s: esSolido };
 };
 playerManager.fixCorner = function (dirX, dirY, atra) {
@@ -296,14 +295,14 @@ io.on('mover', function (data) {
         playerManager.personajes[data.id].y = data.y;
         playerManager.personajes[data.id].hitbox.x = data.x + playerManager.personajes[data.id].posHitX;
         playerManager.personajes[data.id].hitbox.y = data.y + playerManager.personajes[data.id].posHitY;
-        playerManager.personajes[data.id].morir = data.morir;
+        playerManager.personajes[data.id].dead = data.dead;
         playerManager.personajes[data.id].animaciones.stop = data.animaciones.stop;
         playerManager.personajes[data.id].dir = data.dir;
-        if (playerManager.personajes[data.id].morir)
+        if (playerManager.personajes[data.id].dead)
             delete playerManager.personajes[data.id];
     }
 });
-io.on('murio', function (data) {
+io.on('dead', function (data) {
     if (data == playerManager.id) io.emit('delete');
     playerManager.personajes[data].animaciones.countReset = 0;
     playerManager.personajes[data].animaciones.frames = 11;

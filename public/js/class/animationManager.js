@@ -15,6 +15,13 @@ animationManager.LoadContent = function (callback) {
         playerManager.pj.push({ src: "/images/" + el + "_0.png", pj: el });
     });
 
+    // shielding
+    this.imagenes["shield"] = [];
+    ruta["shield"] = [];
+    ruta["shield"].push("/images/spr_shield0.png")
+    ruta["shield"].push("/images/spr_shield1.png")
+    ruta["shield"].push("/images/spr_shield2.png")
+
     // cargar bomba
     this.imagenes["bomb"] = [];
     ruta["bomb"] = [];
@@ -29,7 +36,7 @@ animationManager.LoadContent = function (callback) {
     }
     this.imagenes["block1"] = [];
     ruta["block1"] = [];
-    for (let n = 0; n <= 5; n++) {
+    for (let n = 0; n <= 6; n++) {
         ruta["block1"].push("/images/block_0" + n + ".png");
     }
     // cargar explo 

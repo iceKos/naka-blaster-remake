@@ -71,7 +71,7 @@ menuManager.LoadContent = function () {
         io.emit('user', "Apirat Noiaroom", "zombie");
         buclePrincipal.screen = screenManager.screen.GAME;
         menuManager.Destroy();
-    }, 5000);
+    }, 1000);
 
     // evento del clic en el boton 
     this.button.addEventListener("click", function () {

@@ -31,6 +31,8 @@ class animation {
         }
         else if(mode == "cloud"){
             ctx.drawImage(this.img[this.index], 0, 0, w, h, x, y, 300, 150);
+        }else if(mode == "shield"){
+            ctx.drawImage(this.img[this.index], 0, 0, w+100, h+100, x-10, y-10, 60, 85);
         }
         else {
             if (this.img[this.index] && mode == 'resize' && w && h) {

@@ -33,4 +33,10 @@ var sound_alert = new Howl({
   volume: 0.1,
 })
 
+var shieldHit = new Howl({
+  src: ['/music/sound_shield_hit.m4a'],
+  loop: false,
+  volume: 0.2,
+})
+
 

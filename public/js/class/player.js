@@ -20,17 +20,48 @@ class player {
         this.animaciones = new animation(this.imagenes, this.speedImage);
         this.dir = dir.QUIETO;
         this.dirAnterior = dir.QUIETO;
-        this.morir = false;
+        this.dead = false;
         this.atra = false;
         this.user = "";
+        this.shieldAnimation = new animation(animationManager.imagenes["shield"], 0.1)
+        this.shieldAnimation.stop = true
+        this.undead = true
+        this.settimeUndead()
+        this.play_sound_hit = false
+        setInterval(() => {
+            this.play_sound_hit = false
+        }, 2000);
     }
+
+    settimeUndead() {
+        var timeShield = 10000
+        var runingTime = 0
+        var intervalShield = setInterval(() => {
+            if (runingTime >= timeShield) {
+                this.undead = false
+                clearInterval(intervalShield)
+            } else {
+                if (((runingTime * 100) / timeShield) >= 70) {
+                    this.shieldAnimation.stop = false
+                }
+            }
+            runingTime += 1000
+        }, 1000)
+
+    }
+
+
+
     cambiarPersonaje(personaje) {
         this.personaje = personaje;
         delete (this.animaciones);
         this.imagenes = animationManager.imagenes[personaje];
         this.animaciones = new animation(this.imagenes, this.speedImage);
+        this.shieldAnimation = new animation(animationManager.imagenes["shield"], 0.1)
     }
     Update() {
+
+        this.shieldAnimation.Update(0, 3)
 
         // down
         if (this.dir == dir.ABAJO) {
@@ -75,6 +106,10 @@ class player {
                     }
                     ctx.fillText(text, (this.x - ((width / 2))) + (32 / 2) + 5, this.y);
                     this.animaciones.Draw(ctx, this.x + 2.5, this.y, 500, 500, "player");
+                    if (this.undead == true) {
+                        this.shieldAnimation.Draw(ctx, this.x, this.y, 500, 500, "shield");
+                    }
+
                     if (debug.hit) this.hitbox.Draw(ctx);
                 } else {
                     console.log("Error, no se ha cargado las imagenes al objeto: ");
@@ -96,7 +131,7 @@ class player {
         this.hitbox.y = this.y + this.posHitY;
     }
     igualar(data) {
-        this.morir = data.morir;
+        this.dead = data.dead;
         this.animaciones.stop = data.animaciones.stop;
         this.x = data.x;
         this.y = data.y;

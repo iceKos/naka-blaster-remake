@@ -21,8 +21,8 @@ bombManager.Draw = function (ctx) {
     this.bombs.forEach(element => {
         element.Draw(ctx);
     });
-    this.explosions.forEach((element,index) => {
-        
+    this.explosions.forEach((element, index) => {
+
         if (debug.hit) {
             element.Draw(ctx);
         }
@@ -69,24 +69,39 @@ bombManager.UpdateDrawExploAnimation = function (ctx, index) {
     }
 }
 
+
 bombManager.Update = function () {
     this.bombs.forEach(element => {
         element.Update();
     });
-    playerManager.personajes.forEach(player => {
+    playerManager.personajes.forEach((player, index) => {
         bombManager.explosions.forEach(explo => {
-            if (player.hitbox.chocarCon(explo) && !player.morir) {
-                player.morir = true;
-                if (explo.colocaid == playerManager.id && explo.colocaid != player.id)
-                    io.emit('aumentarKill');
-                io.emit("murio", player.id);
+
+            if (player.hitbox.chocarCon(explo) && !player.dead) {
+
+                if (player.undead == false) {
+                    player.dead = true;
+                    if (explo.colocaid == playerManager.id && explo.colocaid != player.id) {
+                        io.emit('aumentarKill');
+                    }
+                    io.emit("dead", player.id);
+                } else {
+                    if (player.play_sound_hit == false) {
+                        player.play_sound_hit = true
+                        shieldHit.play();
+                    }
+
+                }
+
+
             }
+
         });
     });
     if (keys[32] && playerManager.personajes[playerManager.id] != null) {
 
         let tocar = bombManager.SobreBomb(playerManager.personajes[playerManager.id].hitbox);
-        if (!tocar && !this.puesta && playerManager.personajes[playerManager.id].numBomb > 0 && playerManager.personajes[playerManager.id].morir == false && this.space_bar == false) {
+        if (!tocar && !this.puesta && playerManager.personajes[playerManager.id].numBomb > 0 && playerManager.personajes[playerManager.id].dead == false && this.space_bar == false) {
             playerManager.personajes[playerManager.id].numBomb -= 1;
             this.puesta = true;
             this.space_bar = true

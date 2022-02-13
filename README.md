@@ -21,6 +21,7 @@ node server/app.js
 - [x] sound when drop a bomb
 - [x] sound when bomb exploration
 - [x] change player avatar and block style
+- [x] Add Shield System
 - [ ] reset skill after dead
 - [x] add blackground cloud animation
 - [ ] add process close area
