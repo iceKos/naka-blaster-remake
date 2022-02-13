@@ -118,7 +118,7 @@ bombManager.Update = function () {
 };
 bombManager.colocarBomba = function (data) {
     var player = playerManager.personajes[data.id];
-    var bomba = new bomb(data.x, data.y, player.timeBomb, player.largeBomb);
+    var bomba = new bomb(data.x, data.y, player.timeBomb, player.largeBomb, data.bombId);
     if (playerManager.personajes[playerManager.id] != null) {
         if (player.id != playerManager.id) bomba.recienColocada = false;
     }
@@ -296,3 +296,26 @@ io.on('newBomb', function (data) {
     if (data.id == playerManager.id) bombManager.puesta = false;
     bombManager.colocarBomba(data);
 });
+
+io.on("kickBomb", function ({ currentPosition, nextPosition, direction, bombId }) {
+    console.log("kickBomb", currentPosition, nextPosition, direction, bombId);
+
+    bombManager.bombs = bombManager.bombs.filter(x => x != null)
+    var findIndexBomById = bombManager.bombs.findIndex(bomb => {
+        return bomb.id == bombId
+    })
+
+    if (findIndexBomById >= 0) {
+        var bomb = bombManager.bombs[findIndexBomById]
+        bomb.move_when_kick = true
+        bomb.nextPosition = {
+            x: nextPosition.x,
+            y: nextPosition.y
+        }
+        bomb.kick_direction = direction
+        bomb.kick_status = true
+        bombManager.bombs[findIndexBomById] = bomb
+    }
+
+    
+})

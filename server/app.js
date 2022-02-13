@@ -10,7 +10,7 @@ var public = '/../public'; // Paths donde esta la parte publica
 var map = '/mapJSON/';
 var favicon = require('serve-favicon');
 var _ = require('underscore')
-
+const { v4: uuidv4 } = require('uuid');
 app.use('/css', express.static(path.resolve(__dirname + public + '/css'))); // direccion del css
 app.use('/js', express.static(path.resolve(__dirname + public + '/js'))); // direccion del javascript
 app.use('/img', express.static(path.resolve(__dirname + public + '/img'))); // direccion de las imagenes
@@ -98,7 +98,7 @@ fs.readFile(path.resolve(__dirname + map + 'mapa.json'), 'utf8', function (err, 
 });
 
 // funcion para escuchar el servidor y abrirlo
-server.listen(process.env.PORT || 8080, function () {
+server.listen(process.env.PORT || 8080, '0.0.0.0', function () {
     console.log('Start port : ' + server.address().port);
 });
 
@@ -158,10 +158,152 @@ io.on('connection', function (socket) {
     socket.on('newBomb', function (data) {
         if (socket.player) {
             socket.player.numBomb -= 1;
-            let pack = { id: socket.player.id, x: data.x, y: data.y }
+            let pack = { id: socket.player.id, x: data.x, y: data.y, bombId: uuidv4() }
             io.emit('newBomb', pack);
         }
     });
+
+    // kick bomb
+    socket.on('kickBomb', function ({ currentPosition, nextPosition, direction, bombId }) {
+        if (socket.player) {
+            var map2d = _.chunk(
+                server.mapa.data,
+                server.mapa.width
+            );
+
+            var x = Math.floor(nextPosition.x / 32);
+            var y = Math.floor(nextPosition.y / 32);
+            var statusContinue = true;
+            var countBox = 0;
+            var limitKickBomeBox = 5;
+            var path = [];
+            switch (direction) {
+                case "LEFT_TO_RIGHT": {
+                    while (statusContinue) {
+                        try {
+                            if (map2d[y][x] != 0) {
+                                statusContinue = false;
+                                break;
+                            }
+
+                            if (countBox >= limitKickBomeBox) {
+                                statusContinue = false;
+                                break;
+                            }
+
+                            if (x > 100) {
+                                statusContinue = false;
+                                break;
+                            }
+
+                            x += 1;
+                            countBox += 1;
+                        } catch (error) {
+                            statusContinue = false;
+                        }
+                    }
+                    nextPosition.x = (x - 1) * 32;
+                    nextPosition.y = y * 32;
+                    break;
+                }
+                case "RIGHT_TO_LEFT": {
+                    while (statusContinue) {
+                        try {
+                            if (map2d[y][x] != 0) {
+                                statusContinue = false;
+                                break;
+                            }
+
+                            if (countBox >= limitKickBomeBox) {
+                                statusContinue = false;
+                                break;
+                            }
+
+                            if (x < -5) {
+                                statusContinue = false;
+                                break;
+                            }
+                            x -= 1;
+                            countBox += 1;
+                        } catch (error) {
+                            statusContinue = false;
+                            break;
+                        }
+                    }
+                    nextPosition.x = (x + 1) * 32;
+                    nextPosition.y = y * 32;
+                    break;
+                }
+                case "TOP_TO_BOTTOM": {
+                    while (statusContinue) {
+                        try {
+                            if (map2d[y][x] != 0) {
+                                statusContinue = false;
+                                break;
+                            }
+
+                            if (countBox >= limitKickBomeBox) {
+                                statusContinue = false;
+                                break;
+                            }
+
+                            if (y > 100) {
+                                statusContinue = false;
+                                break;
+                            }
+                            y += 1;
+                            countBox += 1;
+                        } catch (error) {
+                            statusContinue = false;
+                            break;
+                        }
+                    }
+                    nextPosition.x = x * 32;
+                    nextPosition.y = (y - 1) * 32;
+                    break;
+                }
+                case "BOTTOM_TO_TOP": {
+                    while (statusContinue) {
+                        try {
+                            if (map2d[y][x] != 0) {
+                                statusContinue = false;
+                                break;
+                            }
+
+                            if (countBox >= limitKickBomeBox) {
+                                statusContinue = false;
+                                break;
+                            }
+
+                            if (y < -5) {
+                                statusContinue = false;
+                                break;
+                            }
+                            y -= 1;
+                            countBox += 1;
+                        } catch (error) {
+                            statusContinue = false;
+                            break;
+                        }
+                    }
+                    nextPosition.x = x * 32;
+                    nextPosition.y = (y + 1) * 32;
+                    break;
+                }
+                default: {
+                    break;
+                }
+            }
+
+            io.emit("kickBomb", {
+                currentPosition,
+                nextPosition,
+                direction,
+                bombId: bombId
+            });
+        }
+    })
+
     socket.on('msPing', function (data) {
         socket.emit('msPong', data);
     });
@@ -186,7 +328,7 @@ io.on('connection', function (socket) {
         }
     });
     socket.on('destroyBlock', function (data) {
-       
+
 
         if (server.mapa['data'][data] != 0) {
             server.mapa['data'][data] = 0;
