@@ -1,0 +1,7 @@
+File from: [public/images/knight_10.png]
+
+File to: [build/images/knight_10.png]
+
+Compression algorithm: [pngquant]
+
+Description: Error: Command failed: /Users/kos.ice/work-kos/game/naka-blaster-remake/node_modules/pngquant-bin/vendor/pngquant --quality=10 -o build/images/knight_10.png public/images/knight_10.png

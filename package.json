@@ -23,7 +23,9 @@
   "license": "MIT",
   "dependencies": {
     "express": "^4.15.2",
+    "gifsicle": "^5.2.1",
     "howler": "^2.2.3",
+    "pngquant-bin": "^6.0.1",
     "serve-favicon": "^2.5.0",
     "socket.io": "^2.1.1",
     "underscore": "^1.13.2",
