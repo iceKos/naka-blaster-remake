@@ -22,11 +22,11 @@ node server/app.js
 - [x] sound when bomb exploration
 - [x] change player avatar and block style
 - [x] Add Shield System
-- [ ] reset skill after dead
 - [x] add blackground cloud animation
-- [ ] add process close area
-- [ ] add kick bomb function
-- [ ] add killfeed
+- [x] add kick bomb function
 - [x] fix bug when dead have to cannot drop bomb again
 - [ ] player AFK has other player kill but never die
+- [ ] reset skill after dead
+- [ ] add process close area
+- [ ] add killfeed
 

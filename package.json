@@ -30,6 +30,7 @@
     "uuid": "^8.3.2"
   },
   "devDependencies": {
+    "compress-images": "^2.0.4",
     "nodemon": "^2.0.15"
   }
 }

@@ -56,7 +56,6 @@ function initialRoomData(room_id) {
                         mapa["data"][n] = 3;
                     }
                 }
-
             }
             n += 1;
         });
