@@ -402,21 +402,23 @@ io.on('mover', function (data) {
             delete playerManager.personajes[data.id];
     }
 });
-io.on('dead', function (data) {
-    if (data == playerManager.id) io.emit('delete');
-    playerManager.personajes[data].animaciones.countReset = 0;
-    playerManager.personajes[data].animaciones.frames = 11;
-    playerManager.personajes[data].Update = function () {
-        playerManager.personajes[data].animaciones.stop = false;
-        playerManager.personajes[data].animaciones.Update(11, 13);
-        if (playerManager.personajes[data].animaciones.countReset == 1) {
-            delete playerManager.personajes[data];
-            if (camera.player.id == data) {
+io.on('dead', function (playerId) {
+    if (playerId == playerManager.id){
+        io.emit('delete');
+    } 
+    playerManager.personajes[playerId].animaciones.countReset = 0;
+    playerManager.personajes[playerId].animaciones.frames = 11;
+    playerManager.personajes[playerId].Update = function () {
+        playerManager.personajes[playerId].animaciones.stop = false;
+        playerManager.personajes[playerId].animaciones.Update(24, 29);
+        if (playerManager.personajes[playerId].animaciones.countReset == 1) {
+            delete playerManager.personajes[playerId];
+            if (camera.player.id == playerId) {
                 delete camera.player;
             }
         }
     }
-    playerManager.personajes[data].mov = null;
+    playerManager.personajes[playerId].mov = null;
 });
 playerManager.posicionRandom = function () {
     var vectorX = [1, 19, 37, 9, 29, 1, 19, 37, 29, 1, 19, 37];
