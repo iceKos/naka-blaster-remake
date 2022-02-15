@@ -44,10 +44,10 @@ hudManager.Draw = function (ctx) {
 
 
     ctx.fillStyle = 'rgba(0,0,0,0.6)';
-    ctx.fillRect(0, 0, widthBoxLeaderborad + 50, (40 * this.leaderboard.length) + 20);
+    ctx.fillRect(0, 0, widthBoxLeaderborad + 50, (40 * this.leaderboard.length) + 60);
     for (let i = 0; i < this.leaderboard.length; i++) {
         ctx.fillStyle = '#FFFFFF';
-        ctx.fillText((i + 1) + '. ' + this.leaderboard[i].user + '[' + this.leaderboard[i].kills + ']', 20, (50 + 25 * i) + 10);
+        ctx.fillText((i + 1) + '. ' + this.leaderboard[i].user + '[' + this.leaderboard[i].kills + ']', 20, (55 + 30 * i) + 10);
     }
 
 
