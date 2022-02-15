@@ -113,24 +113,31 @@ powerManager.setPower = (indexPower, playerId) => {
     if (powerManager.powers[indexPower]) {
         switch (powerManager.powers[indexPower].type) {
             case powerManager.type.power:
-                if (playerManager.buffLevel.power.value < playerManager.buffLevel.power.max) {
+                if (playerManager.id == playerId) {
+                    if (playerManager.buffLevel.power.value < playerManager.buffLevel.power.max) {
+                        playerManager.buffLevel.power.value += 1
+                    }
                     player.largeBomb += 1;
-                    playerManager.buffLevel.power.value += 1
-                }
-                break;
-            case powerManager.type.bomb:
-                if (playerManager.buffLevel.bombs.value < playerManager.buffLevel.bombs.max) {
-                    player.numMaxBomb += 1;
-                    player.numBomb += 1;
-                    playerManager.buffLevel.bombs.value += 1
                 }
 
                 break;
-            case powerManager.type.speed:
-                if (playerManager.buffLevel.speed.value < playerManager.buffLevel.speed.max) {
-                    player.vel += 0.5;
-                    playerManager.buffLevel.speed.value += 1
+            case powerManager.type.bomb:
+                if (playerManager.id == playerId) {
+                    if (playerManager.buffLevel.bombs.value < playerManager.buffLevel.bombs.max) {
+                        playerManager.buffLevel.bombs.value += 1
+                    }
                 }
+                player.numMaxBomb += 1;
+                player.numBomb += 1;
+
+                break;
+            case powerManager.type.speed:
+                if (playerManager.id == playerId) {
+                    if (playerManager.buffLevel.speed.value < playerManager.buffLevel.speed.max) {
+                        playerManager.buffLevel.speed.value += 1
+                    }
+                }
+                player.vel += 0.5;
                 break;
         }
 
