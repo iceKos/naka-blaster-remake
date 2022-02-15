@@ -4,6 +4,7 @@ class player {
         this.personaje = personaje;
         this.id = id;
         this.x = x;
+        this.power = []
         // this.vel = vel;
         this.vel = vel;
         this.y = y;
@@ -31,7 +32,7 @@ class player {
         this.timeShield = timeShield
         this.timeShieldCount = timeShieldCount
 
-        if(this.timeShieldCount >= this.timeShield){
+        if (this.timeShieldCount >= this.timeShield) {
             this.undead = false
         }
 
@@ -43,10 +44,10 @@ class player {
     settimeUndead() {
 
         var intervalShield = setInterval(() => {
-            
+
             if (this.timeShieldCount >= this.timeShield) {
                 this.undead = false
-                io.emit("time_out_shield", this.id,this.timeShieldCount)
+                io.emit("time_out_shield", this.id, this.timeShieldCount)
                 clearInterval(intervalShield)
             } else {
                 if (((this.timeShieldCount * 100) / this.timeShield) >= 70) {

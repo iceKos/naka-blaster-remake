@@ -138,10 +138,8 @@ io.on('connection', function (socket) {
     });
 
     socket.on("time_out_shield", function (playerId, timeShieldCount) {
-        
         if (socket.player) {
             socket.player.timeShieldCount = timeShieldCount;
-            console.log("time_out_shield",socket.player);
             socket.emit('time_out_shield', playerId, timeShieldCount)
         }
     })
@@ -343,7 +341,8 @@ io.on('connection', function (socket) {
 
         if (server.mapa['data'][data] != 0) {
             server.mapa['data'][data] = 0;
-            if (getRndInteger(0, 4) >= 4) {
+            // TODO: Drop rate item edit here
+            if (getRndInteger(1, 100) >= 0) { // drop item 25% rate
                 let ran = getRndInteger(0, 24);
                 let typePower;
                 if (ran < 1) typePower = 1;
@@ -358,20 +357,6 @@ io.on('connection', function (socket) {
                 server.powers[data] = -1;
             }
 
-            // SET TO BOMB POWER ONLY
-            // io.emit('generatePosPower', { id: data, type: 2 });
-            // server.powers[data] = 2;
-
-            // SET TO MAKE MORE BOMB ONLY
-            // io.emit('generatePosPower', { id: data, type: 2 });
-            // server.powers[data] = 2;
-
-            // SET TO SPEED ONLY
-            // io.emit('generatePosPower', { id: data, type: 3 });
-            // server.powers[data] = 3;
-            // console.log("==============================================================");
-            // console.log(server.map_2d.map(x => x.join(",")).join("\n"));
-            // console.log("==============================================================");
             socket.broadcast.emit('destroyBlock', data);
         }
     });
@@ -398,8 +383,13 @@ io.on('connection', function (socket) {
                 }
                 socket.emit('inicio');
             } else {
+                // TODO : have to reset buff here
                 socket.player.dead = false;
                 socket.player.timeShieldCount = 0;
+                socket.player.largeBomb = 1
+                socket.player.numMaxBomb = 1
+                socket.player.numBomb = 1
+                socket.player.vel = 2
                 let c = posicionRandom();
                 cambiarPos(c.x, c.y, socket.player);
                 setTimeout(

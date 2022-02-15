@@ -5,6 +5,21 @@ var playerManager = {
     emitStop: true,
     pack: null,
     status_kick: false,
+    buffLevel: {
+        power: {
+            value: 0,
+            max: 10
+        },
+        bombs: {
+            value: 0,
+            max: 10
+        },
+        speed: {
+            value: 0,
+            max: 6
+        },
+
+    }
 };
 playerManager.Draw = function (ctx) {
     this.personajes.forEach(element => {
@@ -359,7 +374,7 @@ playerManager.mover = function () {
 }
 
 playerManager.copy = function (data) {
-    
+
     let copy = new player(data.id, data.x, data.y, data.vel, data.personaje, data.posHitX, data.posHitY, data.anchoHit, data.altoHit, data.numBomb, data.timeBomb, data.largeBomb, data.timeShield, data.timeShieldCount);
     copy.user = data.user;
     return copy;
@@ -378,14 +393,18 @@ io.on('newID', function (data, user, pj) {
 io.on('new_player', function (data) {
     let copy = playerManager.copy(data);
     playerManager.personajes[data.id] = copy;
-    if (data.id == playerManager.id) camera.follow(playerManager.personajes[data.id]);
+    if (data.id == playerManager.id) {
+        //TODO: reset buff here
+        playerManager.resetBuff()
+        camera.follow(playerManager.personajes[data.id]);
+    }
 });
 
 // recibe todos los jugadores en la sala
 io.on('allplayers', function (data) {
     let copy;
     data.forEach(element => {
-        console.log("allplayers",element);
+        console.log("allplayers", element);
         copy = playerManager.copy(element);
         playerManager.personajes[copy.id] = copy;
     });
@@ -439,4 +458,10 @@ playerManager.posicionRandom = function () {
         y: vectorY[j] * 32
     }
     return c;
+}
+
+playerManager.resetBuff = function () {
+    this.buffLevel.power.value = 0;
+    this.buffLevel.speed.value = 0;
+    this.buffLevel.bombs.value = 0
 }

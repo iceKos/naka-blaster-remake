@@ -3,7 +3,7 @@ var powerManager = {
     deletePowerIndex: [],
     pos_powers: [],
     type: {
-        flame: 1,
+        power: 1,
         bomb: 2,
         speed: 3
     }
@@ -18,7 +18,7 @@ powerManager.Draw = function (ctx) {
         if (camera.x - 32 < power.x && camera.x + camera.w > power.x &&
             camera.y - 32 < power.y && camera.y + camera.h > power.y) {
             switch (power.type) {
-                case this.type.flame:
+                case this.type.power:
                     ctx.drawImage(imgPower[power.type], power.x, power.y);
                     break;
                 case this.type.bomb:
@@ -37,7 +37,7 @@ powerManager.Update = function () {
     let player = playerManager.personajes[playerManager.id];
     powerManager.recheckDeletePower();
     if (player) {
-        this.powers.forEach((power,index) => {
+        this.powers.forEach((power, index) => {
             if (player.hitbox.chocarCon(power)) {
                 if (power.type != null) {
                     if (player.power) {
@@ -78,13 +78,13 @@ io.on('generatePosPower', data => {
 });
 io.on('powers', data => {
     powerManager.pos_powers = data;
-    powerManager.pos_powers.forEach((types,index) => {
-        
+    powerManager.pos_powers.forEach((types, index) => {
+
         if (index == null || powerManager.pos_powers[index] == null) {
             delete powerManager.pos_powers[index];
         }
     });
-    powerManager.pos_powers.forEach((types,index) => {
+    powerManager.pos_powers.forEach((types, index) => {
         let posX = 0;
         let posY = 0;
         for (let i = 0; i < index; i++) {
@@ -100,7 +100,7 @@ io.on('powers', data => {
 });
 
 powerManager.recheckDeletePower = () => {
-    
+
     powerManager.deletePowerIndex.forEach(indexPower => {
         if (powerManager.powers[indexPower]) {
             delete powerManager.powers[indexPower];
@@ -108,21 +108,33 @@ powerManager.recheckDeletePower = () => {
     })
 }
 
-powerManager.setPower = (indexPower, indexPlayer) => {
-    let player = playerManager.personajes[indexPlayer];
+powerManager.setPower = (indexPower, playerId) => {
+    let player = playerManager.personajes[playerId];
     if (powerManager.powers[indexPower]) {
         switch (powerManager.powers[indexPower].type) {
-            case powerManager.type.flame:
-                player.largeBomb += 1;
+            case powerManager.type.power:
+                if (playerManager.buffLevel.power.value < playerManager.buffLevel.power.max) {
+                    player.largeBomb += 1;
+                    playerManager.buffLevel.power.value += 1
+                }
                 break;
             case powerManager.type.bomb:
-                player.numMaxBomb += 1;
-                player.numBomb += 1;
+                if (playerManager.buffLevel.bombs.value < playerManager.buffLevel.bombs.max) {
+                    player.numMaxBomb += 1;
+                    player.numBomb += 1;
+                    playerManager.buffLevel.bombs.value += 1
+                }
+
                 break;
             case powerManager.type.speed:
-                player.vel += 0.5;
+                if (playerManager.buffLevel.speed.value < playerManager.buffLevel.speed.max) {
+                    player.vel += 0.5;
+                    playerManager.buffLevel.speed.value += 1
+                }
                 break;
         }
+
+        playerManager.personajes[playerId] = player
     }
 
 };
