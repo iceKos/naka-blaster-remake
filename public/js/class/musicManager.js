@@ -45,3 +45,9 @@ var soundKickBomb = new Howl({
   loop: false,
   volume: 0.3,
 })
+
+var soundLevelUp = new Howl({
+  src: ['/music/levelup.mp3'],
+  loop: false,
+  volume: 0.1,
+})

@@ -135,6 +135,11 @@ powerManager.setPower = (indexPower, playerId) => {
         }
 
         playerManager.personajes[playerId] = player
+
+        // TODO: Play sound level up here
+        if (playerManager.id == playerId) {
+            soundLevelUp.play()
+        }
     }
 
 };

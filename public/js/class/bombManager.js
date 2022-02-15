@@ -92,7 +92,7 @@ bombManager.Update = function () {
 
                     io.emit("dead", player.id);
                 } else {
-                    if (player.play_sound_hit == false) {
+                    if (player.play_sound_hit == false && player.id == playerManager.id) {
                         player.play_sound_hit = true
                         shieldHit.play();
                     }

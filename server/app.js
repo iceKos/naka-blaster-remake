@@ -76,7 +76,7 @@ fs.readFile(path.resolve(__dirname + map + 'mapa.json'), 'utf8', function (err, 
     server.mapa['data'].forEach(layer => {
         if (layer == 2) {
             let number = Math.random() * 10;
-            if (number > 0) { // for test 0 real 6
+            if (number > 6) { // for test 0 real 6
                 server.mapa["data"][n] = 0;
             } else {
                 let ran_number = Math.random() * 10;
