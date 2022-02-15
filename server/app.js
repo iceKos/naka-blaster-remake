@@ -349,7 +349,7 @@ io.on('connection', function (socket) {
         if (server.mapa['data'][data] != 0) {
             server.mapa['data'][data] = 0;
             // TODO: Drop rate item edit here
-            if (getRndInteger(1, 100) >= 0) { // drop item 25% rate
+            if (getRndInteger(1, 100) >= 75) { // drop item 25% rate
                 let ran = getRndInteger(0, 24);
                 let typePower;
                 if (ran < 1) typePower = 1;
