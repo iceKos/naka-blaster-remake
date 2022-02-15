@@ -26,6 +26,7 @@
     "gifsicle": "^5.2.1",
     "howler": "^2.2.3",
     "pngquant-bin": "^6.0.1",
+    "random-name": "^0.1.2",
     "serve-favicon": "^2.5.0",
     "socket.io": "^2.1.1",
     "underscore": "^1.13.2",

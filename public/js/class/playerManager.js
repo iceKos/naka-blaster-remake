@@ -404,7 +404,6 @@ io.on('new_player', function (data) {
 io.on('allplayers', function (data) {
     let copy;
     data.forEach(element => {
-        console.log("allplayers", element);
         copy = playerManager.copy(element);
         playerManager.personajes[copy.id] = copy;
     });

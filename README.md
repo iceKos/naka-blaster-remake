@@ -28,7 +28,8 @@ node server/app.js
 - [x] fix bug when reborn all player have shield again
 - [x] show skill board
 - [x] reset skill after dead
+- [x] add killfeed
 - [ ] player AFK has other player kill but never die
 - [ ] add process close area
-- [ ] add killfeed
+
 

@@ -2,7 +2,9 @@ var hudManager = {
     lifes: 0,
     kills: 0,
     solid: false,
-    leaderboard: []
+    leaderboard: [],
+    killFeed: [],
+    textKillFeed: []
 };
 
 
@@ -24,6 +26,56 @@ hudManager.Draw = function (ctx) {
     let powerImage = imgPower[1];
     let bombImage = imgPower[2];
     let speedImage = imgPower[3];
+
+    // ===================== killFeed =================
+    for (let i = 0; i < hudManager.killFeed.length; i++) {
+        if (hudManager.killFeed[i]) { // check not null
+            // check kill themself or not
+            if (hudManager.killFeed[i].p1.id == hudManager.killFeed[i].p2.id) {
+                hudManager.textKillFeed.push(hudManager.killFeed[i].p1.user + " Kill themself.");
+            } else {
+              hudManager.textKillFeed.push(hudManager.killFeed[i].p1.user + " Kill " + hudManager.killFeed[i].p2.user);
+            }
+
+            setTimeout(function () {
+                if (hudManager.textKillFeed.length > 0) {
+                    hudManager.textKillFeed.shift();
+                }
+            }, 5000 + i * 1000);
+        }
+    }
+
+    // clear kill feed
+    hudManager.killFeed = [];
+    // render kill feed
+    for (let i = 0; i < hudManager.textKillFeed.length; i++) {
+        let widthText2 = ctx.measureText(hudManager.textKillFeed[i]).width;
+        ctx.fillStyle = "rgba(0,0,0,0.6)";
+        roundRect(
+            ctx,
+            canvas.width / 2 - (widthText2 / 2 + 40),
+            100 + i * 50,
+            widthText2 + 60,
+            35,
+            3,
+            true
+        );
+        ctx.fillStyle = "#FFFFFF";
+        ctx.fillText(
+            hudManager.textKillFeed[i],
+            canvas.width / 2 - widthText2 / 2,
+            125 + i * 50
+        );
+        ctx.drawImage(
+            animationManager.imagenes["bomb"][0],
+            canvas.width / 2 - (widthText2 / 2 + 30),
+            100 + i * 50,
+            30,
+            30
+        );
+    }
+
+
     // =================== lifes UI =====================
     if (hudManager.lifes >= 0) {
         for (let i = hudManager.lifes; i > 0; i--) {
@@ -190,6 +242,45 @@ hudManager.Draw = function (ctx) {
     };
 }
 
+function roundRect(ctx, x, y, width, height, radius, fill, stroke) {
+    if (typeof stroke === "undefined") {
+        stroke = true;
+    }
+    if (typeof radius === "undefined") {
+        radius = 5;
+    }
+    if (typeof radius === "number") {
+        radius = { tl: radius, tr: radius, br: radius, bl: radius };
+    } else {
+        var defaultRadius = { tl: 0, tr: 0, br: 0, bl: 0 };
+        for (var side in defaultRadius) {
+            radius[side] = radius[side] || defaultRadius[side];
+        }
+    }
+    ctx.beginPath();
+    ctx.moveTo(x + radius.tl, y);
+    ctx.lineTo(x + width - radius.tr, y);
+    ctx.quadraticCurveTo(x + width, y, x + width, y + radius.tr);
+    ctx.lineTo(x + width, y + height - radius.br);
+    ctx.quadraticCurveTo(
+        x + width,
+        y + height,
+        x + width - radius.br,
+        y + height
+    );
+    ctx.lineTo(x + radius.bl, y + height);
+    ctx.quadraticCurveTo(x, y + height, x, y + height - radius.bl);
+    ctx.lineTo(x, y + radius.tl);
+    ctx.quadraticCurveTo(x, y, x + radius.tl, y);
+    ctx.closePath();
+    if (fill) {
+        ctx.fill();
+    }
+    if (stroke) {
+        ctx.stroke();
+    }
+}
+
 
 
 
@@ -203,3 +294,9 @@ io.on('lifes', data => {
 io.on('leaderboard', data => {
     hudManager.leaderboard = data;
 });
+io.on("killfeed", (player1, player2) => {
+    hudManager.killFeed.push({
+        p1: { id: player1.id, user: player1.user },
+        p2: { id: player2.id, user: player2.user },
+    });
+})

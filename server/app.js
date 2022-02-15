@@ -76,7 +76,7 @@ fs.readFile(path.resolve(__dirname + map + 'mapa.json'), 'utf8', function (err, 
     server.mapa['data'].forEach(layer => {
         if (layer == 2) {
             let number = Math.random() * 10;
-            if (number > 6) {
+            if (number > 0) { // for test 0 real 6
                 server.mapa["data"][n] = 0;
             } else {
                 let ran_number = Math.random() * 10;
@@ -105,7 +105,10 @@ server.listen(process.env.PORT || 8080, '0.0.0.0', function () {
 server.bombas = [];
 server.powers = [];
 server.leaderboard = [];
-server.map_2d = []
+server.map_2d = [];
+server.player = {
+
+}
 io.on('connection', function (socket) {
     socket.lifes = 3;
     socket.kills = 0;
@@ -127,6 +130,7 @@ io.on('connection', function (socket) {
         socket.player = data;
         socket.player.timeShield = 10000
         socket.player.timeShieldCount = 0
+        server.player[data.id] = data
         socket.broadcast.emit("new_player", data);
         let leader = getLeaderBoard();
         if (server.leaderboard != leader) {
@@ -325,6 +329,9 @@ io.on('connection', function (socket) {
             io.emit('leaderboard', server.leaderboard);
         }
     });
+    socket.on('killfeed', function (playerId1, playerId2) {
+        io.emit("killfeed", server.player[playerId1], server.player[playerId2])
+    })
     socket.on('sumBomb', function () {
         if (socket.player)
             socket.player.numBomb += 1;

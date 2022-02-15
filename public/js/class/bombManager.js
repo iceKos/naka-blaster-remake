@@ -83,7 +83,13 @@ bombManager.Update = function () {
                     player.dead = true;
                     if (explo.colocaid == playerManager.id && explo.colocaid != player.id) {
                         io.emit('aumentarKill');
+                        io.emit("killfeed", playerManager.id, player.id)
                     }
+
+                    if (explo.colocaid == playerManager.id && player.id == explo.colocaid) {
+                        io.emit("killfeed", playerManager.id, player.id)
+                    }
+
                     io.emit("dead", player.id);
                 } else {
                     if (player.play_sound_hit == false) {
