@@ -82,12 +82,15 @@ bombManager.Update = function () {
                 if (player.undead == false) {
                     player.dead = true;
                     if (explo.colocaid == playerManager.id && explo.colocaid != player.id) {
+                        console.log("aumentarKill",85);
                         io.emit('aumentarKill');
                         io.emit("killfeed", playerManager.id, player.id)
+                        console.log("killfeed",88);
                     }
 
                     if (explo.colocaid == playerManager.id && player.id == explo.colocaid) {
                         io.emit("killfeed", playerManager.id, player.id)
+                        console.log("killfeed",93);
                     }
 
                     io.emit("dead", player.id);
