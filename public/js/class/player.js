@@ -1,5 +1,5 @@
 class player {
-    constructor(id, x, y, vel, personaje, posHitX, posHitY, anchoHit, altoHit, numBomb, timeBomb, largeBomb) {
+    constructor(id, x, y, vel, personaje, posHitX, posHitY, anchoHit, altoHit, numBomb, timeBomb, largeBomb, timeShield = 10000, timeShieldCount = 0) {
         this.imagenes = animationManager.imagenes[personaje];
         this.personaje = personaje;
         this.id = id;
@@ -28,24 +28,32 @@ class player {
         this.undead = true
         this.settimeUndead()
         this.play_sound_hit = false
+        this.timeShield = timeShield
+        this.timeShieldCount = timeShieldCount
+
+        if(this.timeShieldCount >= this.timeShield){
+            this.undead = false
+        }
+
         setInterval(() => {
             this.play_sound_hit = false
         }, 2000);
     }
 
     settimeUndead() {
-        var timeShield = 10000
-        var runingTime = 0
+
         var intervalShield = setInterval(() => {
-            if (runingTime >= timeShield) {
+            
+            if (this.timeShieldCount >= this.timeShield) {
                 this.undead = false
+                io.emit("time_out_shield", this.id,this.timeShieldCount)
                 clearInterval(intervalShield)
             } else {
-                if (((runingTime * 100) / timeShield) >= 70) {
+                if (((this.timeShieldCount * 100) / this.timeShield) >= 70) {
                     this.shieldAnimation.stop = false
                 }
             }
-            runingTime += 1000
+            this.timeShieldCount += 1000
         }, 1000)
 
     }
@@ -104,7 +112,7 @@ class player {
                     else {
                         ctx.fillStyle = '#FFFFFF';
                     }
-                    ctx.fillText(text, (this.x - ((width / 2))) + (32 / 2) + 5, this.y-8);
+                    ctx.fillText(text, (this.x - ((width / 2))) + (32 / 2) + 5, this.y - 8);
                     this.animaciones.Draw(ctx, this.x + 2.5, this.y, 500, 500, "player");
                     if (this.undead == true) {
                         this.shieldAnimation.Draw(ctx, this.x, this.y, 500, 500, "shield");

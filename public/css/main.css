@@ -1,120 +1,203 @@
-@import url('https://fonts.googleapis.com/css?family=Oswald:400,700');
+@import url("https://fonts.googleapis.com/css?family=Oswald:400,700");
+@font-face {
+  font-family: 'BADABB';
+  font-style: normal;
+  font-weight: 400;
+  src: url('./fonts/BADABB__.TTF') ;
+}
+
+#img-dead{
+  width: 40%;
+  height: 19%;
+}
+#box-dead {
+  position: fixed; /* Sit on top of the page content */
+  width: 100%; /* Full width (cover the whole page) */
+  height: 100%; /* Full height (cover the whole page) */
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0,0,0,0.5); /* Black background with opacity */
+  z-index: 3; /* Specify a stack order in case you're using a different order for other elements */
+  display:flex;
+  justify-content: center;
+  align-items: center;
+}
 
 body {
-    margin: 0px;
-    overflow:hidden;
-    font-family: 'Oswald', sans-serif;
+  margin: 0px;
+  overflow: hidden;
+  font-family: "Oswald", sans-serif;
 }
-canvas { 
-    margin: auto;
-    display: block;
-    overflow:hidden; 
-    overflow-x: hidden;
-    margin: 0px; 
-    padding: 0px; 
+canvas {
+  margin: auto;
+  display: block;
+  overflow: hidden;
+  overflow-x: hidden;
+  margin: 0px;
+  padding: 0px;
 }
-.clear{
-    clear: both;
+.clear {
+  clear: both;
 }
 img#imagenDead {
-    position: absolute;
-    top: 39%;
-    left: 34%;
-    z-index: 2;
+  position: absolute;
+  top: 39%;
+  left: 34%;
+  z-index: 2;
 }
 div#content {
-    position: absolute;
-    width: 21em;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%,-75%);
+  position: absolute;
+  width: 50em;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -75%);
 }
-span#reconectar, span#conectando {
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -90%);
-    position: absolute;
-    color: white;
-    font-size: 4em;
+span#reconnecting,
+span#connecting {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -90%);
+  position: absolute;
+  color: white;
+  font-size: 4em;
 }
-#game{
-    overflow:hidden;
+#game {
+  overflow: hidden;
 }
 div#contentform {
-    box-sizing: border-box;
-    width: 100%;
-    display: flex;
+  box-sizing: border-box;
+  width: 100%;
+  display: flex;
 }
 span#texto {
-    color: white;
-    font-size: 2em;
+  color: white;
+  font-size: 2em;
 }
 span#spanError {
-    color: red;
-    font-size: 1.5em;
+  color: red;
+  font-size: 1.5em;
 }
-#element::-webkit-scrollbar { 
-    display: none; 
+#element::-webkit-scrollbar {
+  display: none;
 }
 #boton {
-    background-color: #f44336;
-    border: none;
-    color: white;
-    padding: 0px 25px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
-    cursor: pointer;
-    height: 39px;
-    -webkit-transition: opacity .3s;
-    transition: opacity .3s;
+  background-color: #f44336;
+  border: none;
+  color: white;
+  padding: 0px 25px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  cursor: pointer;
+  height: 39px;
+  -webkit-transition: opacity 0.3s;
+  transition: opacity 0.3s;
+}
+#boton2 {
+  background-color: #36c8f4;
+  border: none;
+  color: white;
+  padding: 0px 25px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  cursor: pointer;
+  height: 100px;
+  -webkit-transition: opacity 0.3s;
+  transition: opacity 0.3s;
 }
 input#inputText {
-    width: 100%;
-    height: 29px;
-    border: 4px solid rgba(0, 0, 0, .06);
-    color: rgba(0, 0, 0, .5);
-    box-shadow: 0 0 transparent;
-    -webkit-transition: border .2s;
-    transition: border .2s;
+  width: 100%;
+  height: 29px;
+  border: 4px solid rgba(0, 0, 0, 0.06);
+  color: rgba(0, 0, 0, 0.5);
+  box-shadow: 0 0 transparent;
+  -webkit-transition: border 0.2s;
+  transition: border 0.2s;
 }
-@media (max-width:800px) {
-    div#content {
-        width: 95%;
-        transform: translate(-50%,-90%);
-    }
-    span#reconectar {
-        left: 6%;
-    }
-    img#imagenDead {
-        left: 4%;
-    }
+@media (max-width: 800px) {
+  div#content {
+    width: 95%;
+    transform: translate(-50%, -90%);
+  }
+  span#reconectar {
+    left: 6%;
+  }
+  img#imagenDead {
+    left: 4%;
+  }
 }
-[role=button], a, button, input, label, select, textarea {
-    -ms-touch-action: manipulation;
-    touch-action: manipulation;
+[role="button"],
+a,
+button,
+input,
+label,
+select,
+textarea {
+  -ms-touch-action: manipulation;
+  touch-action: manipulation;
 }
 #personajes {
-    overflow-y: hidden;
-    overflow-x: scroll;
-    display: flex;
-    margin: 5px;
-    height: 104px;
+  overflow-y: hidden;
+  overflow-x: scroll;
+  display: flex;
+  margin: 5px;
+  height: 104px;
 }
 #personajes span {
-    display: block;
-    float: left;
+  display: block;
+  float: left;
 }
 #personajes span img {
-    padding: 5px;
+  padding: 5px;
 }
 .selected {
-    border: 3px solid rgba(255,255,255,0.5);
-    border-style: dashed;
+  border: 3px solid rgba(255, 255, 255, 0.5);
+  border-style: dashed;
+  width: 80px;
+  height: 80px;
 }
 
+#pj_0 {
+  width: 80px;
+  height: 80px;
+}
+#pj_1 {
+  width: 80px;
+  height: 80px;
+}
+#pj_2 {
+  width: 80px;
+  height: 80px;
+}
+#pj_3 {
+  width: 80px;
+  height: 80px;
+}
+#pj_4 {
+  width: 80px;
+  height: 80px;
+}
+#pj_5 {
+  width: 80px;
+  height: 80px;
+}
+#pj_6 {
+  width: 80px;
+  height: 80px;
+}
+#pj_7 {
+  width: 80px;
+  height: 80px;
+}
+
+
+
 h4#selectAplayer {
-    margin: 0 0 2px 0px;
-    color: white;
+  margin: 0 0 2px 0px;
+  color: white;
 }

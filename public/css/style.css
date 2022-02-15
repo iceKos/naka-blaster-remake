@@ -1,0 +1,256 @@
+html,
+body {
+  padding: 0;
+  margin: 0;
+  overflow: hidden;
+
+  background: #000000;
+  color: white;
+}
+
+html,
+body,
+canvas {
+  touch-action: none;
+  touch-action-delay: none;
+}
+
+img#imagenDead {
+  position: absolute;
+  top: 45%;
+  left: 32%;
+  z-index: 2;
+}
+
+#notSupportedWrap {
+  margin: 2em auto 1em auto;
+  width: 75%;
+  max-width: 45em;
+  border: 2px solid #aaa;
+  border-radius: 1em;
+  padding: 2em;
+  background-color: #f0f0f0;
+  font-family: "Segoe UI", Frutiger, "Frutiger Linotype", "Dejavu Sans",
+    "Helvetica Neue", Arial, sans-serif;
+  color: black;
+}
+
+#notSupportedTitle {
+  font-size: 1.8em;
+}
+
+.notSupportedMessage {
+  font-size: 1.2em;
+}
+
+.notSupportedMessage em {
+  color: #888;
+}
+
+@font-face {
+  font-family: "rifficfree-bold";
+  src: url("../fonts/rifficfree-bold.ttf") format("truetype");
+}
+
+/* nakamoto added css style */
+
+.screen-loading {
+  display: none;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  z-index: 99999;
+  background-color: rgba(0, 0, 0, 0.8);
+  width: 100vw;
+  height: 100vh;
+}
+@keyframes LogoEffect {
+  0% {
+    box-shadow: 0 0 0 #ec2f2f;
+  }
+
+  100% {
+    box-shadow: 0 0 20px #ec2f2f;
+  }
+}
+
+.screen-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  font-size: 18px;
+}
+
+.screen-loading .loader {
+  max-width: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.screen-loading .loader svg {
+  width: 100%;
+}
+
+.screen-loading .loader #rect-1 {
+  animation: loadingC 1s 0.5s linear infinite;
+}
+
+.screen-loading .loader #rect-2 {
+  animation: loadingC 1s 1.4s linear infinite;
+}
+
+.screen-loading .loader #rect-3 {
+  animation: loadingC 1s 2.2s linear infinite;
+}
+
+.screen-loading h3 {
+  font-size: 8px;
+  text-align: center;
+  color: #fff;
+  position: absolute;
+  margin: 25px 0 0;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+    top: -40px;
+    left: -96px;
+    width: calc(100% + 192px);
+    position: fixed;
+    background-color: rgba(0, 0, 0, 0.7);
+    height: calc(100% + 192px);
+    z-index: 99;
+    display: flex;
+    overflow: hidden;
+  }
+
+  100% {
+    animation: fadeIn 0.5s;
+    opacity: 0;
+  }
+}
+
+@keyframes loadingC {
+  0% {
+    opacity: 0.25;
+  }
+
+  50% {
+    opacity: 0.75;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
+img {
+  width: 60%;
+  height: 14%;
+}
+
+.loading-isActive {
+  top: -40px;
+  left: -96px;
+  width: calc(100% + 192px);
+  position: fixed;
+  background-color: rgba(0, 0, 0, 0.7);
+  height: calc(100% + 192px);
+  z-index: 99;
+  display: flex;
+  overflow: hidden;
+  animation: fadeIn 1s;
+  opacity: 1;
+}
+
+.loading-isNotActive {
+  animation: fadeOut 1s;
+  opacity: 0;
+}
+
+.loader {
+  animation: fadeIn 1.3s;
+  top: 50%;
+  left: 50%;
+  position: absolute;
+  transform: translate(-50%, -65%);
+  zoom: 1.5;
+  width: fit-content;
+  padding-bottom: 30px;
+}
+
+.loader .logo-icon {
+  border-radius: 50%;
+  animation: LogoEffect 1s alternate infinite;
+  margin-right: 10px;
+}
+
+@media screen and (max-width: 361px) {
+  .loader .logo-icon {
+    width: 25%;
+    margin-right: 2px;
+  }
+}
+
+@media screen and (max-width: 361px) {
+  .loader .logo-text {
+    width: 70%;
+  }
+}
+
+@media screen and (max-width: 361px) {
+  .loader {
+    width: 50vw;
+    padding-bottom: 80px;
+  }
+}
+
+@media screen and (max-width: 481px) {
+  .loader {
+    padding-bottom: 40px;
+  }
+}
+
+/** Use intstead */
+
+@font-face {
+  font-family: "dogicapixel";
+  src: url("/css/fonts/dogicapixel-webfont.woff2") format("woff");
+}
+
+@font-face {
+  font-family: "dogicapixel-bold";
+  src: url("/css/fonts/dogicapixelbold-webfont.woff2") format("woff");
+}
+
+.swal2-title {
+  font-family: dogicapixel-bold !important;
+  font-size: 20px !important;
+  line-height: 1.6;
+}
+
+.swal2-html-container {
+  font-family: dogicapixel !important;
+  line-height: 1.5 !important;
+  font-size: 14px !important;
+}
+
+.swal2-styled {
+  font-family: dogicapixel !important;
+  font-size: 12px !important;
+  padding-top: 15px !important;
+  padding-bottom: 15px !important;
+}

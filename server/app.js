@@ -109,6 +109,7 @@ server.map_2d = []
 io.on('connection', function (socket) {
     socket.lifes = 3;
     socket.kills = 0;
+
     // console.log("==============================================================");
     // console.log(_.chunk(server.mapa.data, server.mapa.width).map(x => x.join(",")).join("\n"));
     // console.log("==============================================================");
@@ -119,13 +120,14 @@ io.on('connection', function (socket) {
         socket.emit('powers', server.powers);
     });
     socket.on('user', function (data, pj) {
-        socket.emit("nuevoID", server.lastPlayderID++, data, pj);
+        socket.emit("newID", server.lastPlayderID++, data, pj);
         socket.emit("allplayers", getAllPlayer(socket.id));
     });
-    socket.on("nuevoJugador", function (data) {
+    socket.on("new_player", function (data) {
         socket.player = data;
-
-        socket.broadcast.emit("nuevoJugador", data);
+        socket.player.timeShield = 10000
+        socket.player.timeShieldCount = 0
+        socket.broadcast.emit("new_player", data);
         let leader = getLeaderBoard();
         if (server.leaderboard != leader) {
             server.leaderboard = leader;
@@ -134,6 +136,16 @@ io.on('connection', function (socket) {
             socket.emit('leaderboard', server.leaderboard);
         }
     });
+
+    socket.on("time_out_shield", function (playerId, timeShieldCount) {
+        
+        if (socket.player) {
+            socket.player.timeShieldCount = timeShieldCount;
+            console.log("time_out_shield",socket.player);
+            socket.emit('time_out_shield', playerId, timeShieldCount)
+        }
+    })
+
     socket.on("mover", function (data) {
         let p = socket.player;
         if (p) {
@@ -367,6 +379,7 @@ io.on('connection', function (socket) {
         var player = getPlayerID(id);
         if (player) {
             player.dead = true;
+            player.timeShieldCount = 0
             if (id == socket.player.id) {
                 socket.lifes -= 1;
                 socket.emit('lifes', socket.lifes);
@@ -386,11 +399,12 @@ io.on('connection', function (socket) {
                 socket.emit('inicio');
             } else {
                 socket.player.dead = false;
+                socket.player.timeShieldCount = 0;
                 let c = posicionRandom();
                 cambiarPos(c.x, c.y, socket.player);
                 setTimeout(
                     function () {
-                        io.emit('nuevoJugador', socket.player)
+                        io.emit('new_player', socket.player)
                     }, 3000);
             }
         }

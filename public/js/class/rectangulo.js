@@ -14,7 +14,7 @@ class rectangulo {
             ctx.fillRect(this.x, this.y, this.ancho, this.alto);
         }
     }
-    copiar() {
+    copy() {
         return new rectangulo(this.x, this.y, this.ancho, this.alto);
     }
 

@@ -25,7 +25,9 @@ node server/app.js
 - [x] add blackground cloud animation
 - [x] add kick bomb function
 - [x] fix bug when dead have to cannot drop bomb again
+- [x] fix bug when reborn all player have shield again
 - [ ] player AFK has other player kill but never die
+- [ ] show skill board
 - [ ] reset skill after dead
 - [ ] add process close area
 - [ ] add killfeed

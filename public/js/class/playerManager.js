@@ -113,7 +113,7 @@ playerManager.solido = function (x, y, player) {
 
     let esSolido = false, temporal;
     var fix = false;
-    temporal = player.hitbox.copiar();
+    temporal = player.hitbox.copy();
     var lastHitbox = { x: temporal.x, y: temporal.y };
     temporal.x += x;
     temporal.y += y;
@@ -358,34 +358,36 @@ playerManager.mover = function () {
     }
 }
 
-playerManager.copiar = function (data) {
-    let copia = new player(data.id, data.x, data.y, data.vel, data.personaje, data.posHitX, data.posHitY, data.anchoHit, data.altoHit, data.numBomb, data.timeBomb, data.largeBomb);
-    copia.user = data.user;
-    return copia;
+playerManager.copy = function (data) {
+    
+    let copy = new player(data.id, data.x, data.y, data.vel, data.personaje, data.posHitX, data.posHitY, data.anchoHit, data.altoHit, data.numBomb, data.timeBomb, data.largeBomb, data.timeShield, data.timeShieldCount);
+    copy.user = data.user;
+    return copy;
 }
 
-io.on('nuevoID', function (data, user, pj) {
+io.on('newID', function (data, user, pj) {
     playerManager.id = data;
     let c = playerManager.posicionRandom();
-    playerManager.personajes[playerManager.id] = new player(playerManager.id, 30, -7, 2, pj, 5, 45, 25, 17, 1, 3000, 1);
+    playerManager.personajes[playerManager.id] = new player(playerManager.id, 30, -7, 2, pj, 5, 45, 25, 17, 1, 3000, 1, 10000, 0);
     playerManager.personajes[playerManager.id].user = user;
     playerManager.personajes[playerManager.id].cambiarPos(c.x, c.y);
     camera.follow(playerManager.personajes[playerManager.id]);
-    io.emit("nuevoJugador", playerManager.personajes[playerManager.id]);
+    io.emit("new_player", playerManager.personajes[playerManager.id]);
 });
 // por si entra otro jugador
-io.on('nuevoJugador', function (data) {
-    let copia = playerManager.copiar(data);
-    playerManager.personajes[data.id] = copia;
+io.on('new_player', function (data) {
+    let copy = playerManager.copy(data);
+    playerManager.personajes[data.id] = copy;
     if (data.id == playerManager.id) camera.follow(playerManager.personajes[data.id]);
 });
 
 // recibe todos los jugadores en la sala
 io.on('allplayers', function (data) {
-    let copia;
+    let copy;
     data.forEach(element => {
-        copia = playerManager.copiar(element);
-        playerManager.personajes[copia.id] = copia;
+        console.log("allplayers",element);
+        copy = playerManager.copy(element);
+        playerManager.personajes[copy.id] = copy;
     });
 });
 // recibe quien se mueve
@@ -402,10 +404,18 @@ io.on('mover', function (data) {
             delete playerManager.personajes[data.id];
     }
 });
+
+io.on("time_out_shield", function (playerId, countTimeShield) {
+    if (playerManager.personajes[playerId] != null) {
+        playerManager.personajes[playerId].countTimeShield = countTimeShield
+        playerManager.personajes[playerId].undead = false
+    }
+})
+
 io.on('dead', function (playerId) {
-    if (playerId == playerManager.id){
+    if (playerId == playerManager.id) {
         io.emit('delete');
-    } 
+    }
     playerManager.personajes[playerId].animaciones.countReset = 0;
     playerManager.personajes[playerId].animaciones.frames = 11;
     playerManager.personajes[playerId].Update = function () {
