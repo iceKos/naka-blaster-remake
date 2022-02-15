@@ -117,8 +117,9 @@ powerManager.setPower = (indexPower, playerId) => {
                     if (playerManager.buffLevel.power.value < playerManager.buffLevel.power.max) {
                         playerManager.buffLevel.power.value += 1
                     }
-                    player.largeBomb += 1;
+
                 }
+                player.largeBomb += 1;
 
                 break;
             case powerManager.type.bomb:
