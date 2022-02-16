@@ -68,7 +68,7 @@ menuManager.LoadContent = function () {
 
     // cut to game screen
     setTimeout(() => {
-        io.emit('user', chance.name(), "zombie");
+        io.emit('user', chance.name(), "zombie",uuidv4());
         buclePrincipal.screen = screenManager.screen.GAME;
         menuManager.Destroy();
     }, 1000);

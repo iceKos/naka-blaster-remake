@@ -24,11 +24,13 @@ node server/app.js
 - [x] Add Shield System
 - [x] add blackground cloud animation
 - [x] add kick bomb function
-- [x] fix bug when dead have to cannot drop bomb again
+- [x] fix bug when dead must be cannot drop bomb again
 - [x] fix bug when reborn all player have shield again
 - [x] show skill board
 - [x] reset skill after dead
 - [x] add killfeed
+- [x] change array player list to player objects
+- [ ] separate room and data in room
 - [ ] player AFK has other player kill but never die
 - [ ] add process close area
 

@@ -74,25 +74,27 @@ bombManager.Update = function () {
     this.bombs.forEach(element => {
         element.Update();
     });
-    playerManager.personajes.forEach((player, index) => {
+
+    // TODO: change loop object [DONE]
+    Object.values(playerManager.personajes).forEach((player, index) => {
         bombManager.explosions.forEach(explo => {
 
             if (player.hitbox.chocarCon(explo) && !player.dead) {
 
                 if (player.undead == false) {
-                    player.dead = true;
+
                     if (explo.colocaid == playerManager.id && explo.colocaid != player.id) {
-                        console.log("aumentarKill",85);
-                        io.emit('aumentarKill');
+                        console.log("aumentarKill", 85, "player.dead", player.dead);
+                        io.emit('aumentarKill', playerManager.id, player.id);
                         io.emit("killfeed", playerManager.id, player.id)
-                        console.log("killfeed",88);
+                        console.log("killfeed", 88, "player.dead", player.dead);
                     }
 
                     if (explo.colocaid == playerManager.id && player.id == explo.colocaid) {
                         io.emit("killfeed", playerManager.id, player.id)
-                        console.log("killfeed",93);
+                        console.log("killfeed", 93, "player.dead", player.dead);
                     }
-
+                    player.dead = true;
                     io.emit("dead", player.id);
                 } else {
                     if (player.play_sound_hit == false && player.id == playerManager.id) {
@@ -255,17 +257,7 @@ bombManager.tocarBomb = function (hit) {
             }
         }
     }
-    if (!retornar.toco) {
-        llaves = Object.keys(powerManager.powers);
-        for (let i = 0; i < llaves.length; i++) {
-            element = powerManager.powers[llaves[i]];
-            if (hit.chocarCon(element)) {
-                retornar.toco = true;
-                delete powerManager.powers[llaves[i]];
-                break;
-            }
-        }
-    }
+
     return retornar;
 };
 bombManager.SobreBomb = function (hit) {

@@ -73,19 +73,19 @@ class player {
         this.shieldAnimation.Update(0, 3)
 
         // down
-        if (this.dir == dir.ABAJO) {
+        if (this.dir == dir.DOWN) {
             this.animaciones.Update(0, 5);
         }
         // up
-        else if (this.dir == dir.ARRIBA) {
+        else if (this.dir == dir.UP) {
             this.animaciones.Update(18, 23);
         }
         // left
-        else if (this.dir == dir.IZQUIERDA) {
+        else if (this.dir == dir.LEFT) {
             this.animaciones.Update(12, 17);
         }
         // right
-        else if (this.dir == dir.DERECHA) {
+        else if (this.dir == dir.RIGHT) {
             this.animaciones.Update(6, 11);
         } else if (this.animaciones != null) {
             this.animaciones.Update(0, 0);

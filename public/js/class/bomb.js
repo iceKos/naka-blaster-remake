@@ -35,19 +35,17 @@ class bomb {
     }
     Update() {
         this.animaciones.Update(0, 3);
-
+        this.kick_status = false
         if (this.move_when_kick == true && this.nextPosition.x != null && this.nextPosition.y != null && this.kick_direction != null) {
+
             switch (this.kick_direction) {
                 case "TOP_TO_BOTTOM": {
                     // change only y +
                     this.y += this.moveSpeed
                     this.hitbox.y = this.y
-
-
                     if (this.y >= this.nextPosition.y) {
                         this.y = this.nextPosition.y
                         this.hitbox.y = this.y
-                        this.kick_status = false
                         this.move_when_kick = false
                         this.nextPosition = {
                             x: null,
@@ -61,13 +59,9 @@ class bomb {
                     // change only y -
                     this.y -= this.moveSpeed
                     this.hitbox.y = this.y
-
-
-
                     if (this.y <= this.nextPosition.y) {
                         this.y = this.nextPosition.y
                         this.hitbox.y = this.y
-                        this.kick_status = false
                         this.move_when_kick = false
                         this.nextPosition = {
                             x: null,
@@ -81,13 +75,9 @@ class bomb {
                     // change only x +
                     this.x += this.moveSpeed
                     this.hitbox.x = this.x
-
-
-
                     if (this.x >= this.nextPosition.x) {
                         this.x = this.nextPosition.x
                         this.hitbox.x = this.x
-                        this.kick_status = false
                         this.move_when_kick = false
                         this.nextPosition = {
                             x: null,
@@ -101,13 +91,9 @@ class bomb {
                     // change only x -
                     this.x -= this.moveSpeed
                     this.hitbox.x = this.x
-
-
-
                     if (this.x <= this.nextPosition.x) {
                         this.x = this.nextPosition.x
                         this.hitbox.x = this.x
-                        this.kick_status = false
                         this.move_when_kick = false
                         this.nextPosition = {
                             x: null,
@@ -117,8 +103,6 @@ class bomb {
                     }
                     break;
                 }
-
-
                 default:
                     break;
             }

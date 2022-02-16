@@ -7,10 +7,10 @@ var io = io.connect(),
     canvas = document.getElementById("myCanvas"),
     keys = [];
 var dir = {
-    ARRIBA: "arriba",
-    ABAJO: "abajo",
-    DERECHA: "derecha",
-    IZQUIERDA: "izquierda"
+    UP: "UP",
+    DOWN: "DOWN",
+    RIGHT: "RIGHT",
+    LEFT: "LEFT"
 };
 canvas.width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
 canvas.height = window.innerHeight || document.documentElement.clientWidth || document.body.clientWidth;
@@ -20,22 +20,6 @@ function resizeCanvas() {
     buclePrincipal.ctx.font = `1.1em 'Oswald', sans-serif`;
 }
 
-// TODO: Play sound music backgroud
-// canvas.addEventListener(
-//     "click",
-//     function (evt) {
-
-//         // console.log(music);
-//         // // if (!music.overworld.playing()) {
-//         // //     soundSetting = 1;
-//         // //     music.overworld.play();
-//         // // } else {
-//         // //     soundSetting = 0;
-//         // //     music.overworld.pause();
-//         // // }
-//     },
-//     false
-// );
 
 function getRndInteger(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
