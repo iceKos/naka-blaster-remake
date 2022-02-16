@@ -74,7 +74,9 @@ bombManager.Update = function () {
     this.bombs.forEach(element => {
         element.Update();
     });
-    playerManager.personajes.forEach((player, index) => {
+
+    // TODO: change loop object [DONE]
+    Object.values(playerManager.personajes).forEach((player, index) => {
         bombManager.explosions.forEach(explo => {
 
             if (player.hitbox.chocarCon(explo) && !player.dead) {
@@ -83,7 +85,7 @@ bombManager.Update = function () {
 
                     if (explo.colocaid == playerManager.id && explo.colocaid != player.id) {
                         console.log("aumentarKill", 85, "player.dead", player.dead);
-                        io.emit('aumentarKill');
+                        io.emit('aumentarKill', playerManager.id, player.id);
                         io.emit("killfeed", playerManager.id, player.id)
                         console.log("killfeed", 88, "player.dead", player.dead);
                     }
@@ -255,7 +257,7 @@ bombManager.tocarBomb = function (hit) {
             }
         }
     }
-   
+
     return retornar;
 };
 bombManager.SobreBomb = function (hit) {

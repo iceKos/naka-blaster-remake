@@ -15,7 +15,7 @@ class player {
         this.hitbox = new rectangulo(this.x + posHitX, this.y + posHitY, anchoHit, altoHit);
         this.numBomb = numBomb;
         this.numMaxBomb = numBomb;
-        this.timeBomb = timeBomb;
+        this.timeBomb = 10000;
         this.largeBomb = largeBomb;
         this.speedImage = (0.09 * this.vel) / 3;
         this.animaciones = new animation(this.imagenes, this.speedImage);

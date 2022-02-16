@@ -122,8 +122,8 @@ io.on('connection', function (socket) {
     socket.on('powers', function () {
         socket.emit('powers', server.powers);
     });
-    socket.on('user', function (data, pj) {
-        socket.emit("newID", server.lastPlayderID++, data, pj);
+    socket.on('user', function (data, pj, playerId) {
+        socket.emit("newID", playerId, data, pj);
         socket.emit("allplayers", getAllPlayer(socket.id));
     });
     socket.on("new_player", function (data) {
@@ -189,7 +189,6 @@ io.on('connection', function (socket) {
             var statusContinue = true;
             var countBox = 0;
             var limitKickBomeBox = 5;
-            var path = [];
             switch (direction) {
                 case "LEFT_TO_RIGHT": {
                     while (statusContinue) {
@@ -308,29 +307,45 @@ io.on('connection', function (socket) {
                 }
             }
 
-            io.emit("kickBomb", {
-                currentPosition,
-                nextPosition,
-                direction,
-                bombId: bombId
-            });
+            if (countBox != 0) {
+                io.emit("kickBomb", {
+                    currentPosition,
+                    nextPosition,
+                    direction,
+                    bombId: bombId
+                });
+            }
+
         }
     })
 
     socket.on('msPing', function (data) {
         socket.emit('msPong', data);
     });
-    socket.on('aumentarKill', function () {
-        socket.kills += 1;
-        socket.emit('kill', socket.kills);
-        let leader = getLeaderBoard();
-        if (server.leaderboard != leader) {
-            server.leaderboard = leader;
-            io.emit('leaderboard', server.leaderboard);
+    socket.on('aumentarKill', function (playerId1, playerId2) {
+        var player = getPlayerID(playerId2)
+        if (player) {
+            if (player.dead == false) {
+                socket.kills += 1;
+                socket.emit('kill', socket.kills);
+                let leader = getLeaderBoard();
+                if (server.leaderboard != leader) {
+                    server.leaderboard = leader;
+                    io.emit('leaderboard', server.leaderboard);
+                }
+            }
+
         }
+
     });
     socket.on('killfeed', function (playerId1, playerId2) {
-        io.emit("killfeed", server.player[playerId1], server.player[playerId2])
+        var player = getPlayerID(playerId2)
+        if (player) {
+            if (player.dead == false) {
+                io.emit("killfeed", server.player[playerId1], server.player[playerId2])
+            }
+        }
+
     })
     socket.on('sumBomb', function () {
         if (socket.player)

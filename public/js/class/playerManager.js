@@ -22,7 +22,8 @@ var playerManager = {
     }
 };
 playerManager.Draw = function (ctx) {
-    this.personajes.forEach(element => {
+    // TODO: change loop object [DONE]
+    Object.values(this.personajes).forEach(element => {
         this.personajes[element.id].Draw(ctx);
     });
     camera.Draw(ctx);
@@ -30,7 +31,8 @@ playerManager.Draw = function (ctx) {
 playerManager.Update = function () {
     this.mover();
     camera.Update();
-    this.personajes.forEach(element => {
+    // TODO: change loop object [DONE]
+    Object.values(this.personajes).forEach(element => {
         if (camera.player == null) {
             camera.follow(this.personajes[element.id]);
         }
@@ -160,7 +162,6 @@ playerManager.solido = function (x, y, player) {
     }
 
     // check move to hit block or not
-
 
     if (!esSolido && !player.atra) {
         llaves = Object.keys(blockManager.blocks);
@@ -380,8 +381,8 @@ playerManager.copy = function (data) {
     return copy;
 }
 
-io.on('newID', function (data, user, pj) {
-    playerManager.id = data;
+io.on('newID', function (playerId, user, pj) {
+    playerManager.id = playerId;
     let c = playerManager.posicionRandom();
     playerManager.personajes[playerManager.id] = new player(playerManager.id, 30, -7, 2, pj, 5, 45, 25, 17, 1, 3000, 1, 10000, 0);
     playerManager.personajes[playerManager.id].user = user;
