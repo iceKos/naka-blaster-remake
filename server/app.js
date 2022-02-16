@@ -31,6 +31,7 @@ var init_data = {
     powers: [],
     leaderboard: [],
     map_2d: [],
+    player: {},
     player_state: {
 
     }
@@ -65,36 +66,7 @@ function initialRoomData(room_id) {
 }
 
 app.get('/public/:roomId/:user_id', function (req, res) {
-    var { roomId, user_id } = req.params
-    console.log(roomId, user_id);
     res.sendFile(path.resolve(__dirname + public + '/index.html')); // si se pide / llama al index
-});
-
-server.lastPlayderID = 0; // se inicializa las id de los personajes
-fs.readFile(path.resolve(__dirname + map + 'mapa.json'), 'utf8', function (err, data) {
-    if (err) throw err;
-    server.mapa = JSON.parse(data)["layers"][0];
-    let n = 0;
-    server.mapa['data'].forEach(layer => {
-        if (layer == 2) {
-            let number = Math.random() * 10;
-            if (number > 6) { // for test 0 real 6
-                server.mapa["data"][n] = 0;
-            } else {
-                let ran_number = Math.random() * 10;
-                if (ran_number > 6) {
-                    server.mapa["data"][n] = 2;
-                } else {
-                    server.mapa["data"][n] = 3;
-                }
-            }
-        }
-        n += 1;
-    });
-
-    server.map_2d = _.chunk(Array.from(Array(server.mapa.data.length).keys()), server.mapa.width)
-
-
 });
 
 // Start server
@@ -103,25 +75,70 @@ server.listen(process.env.PORT || 8080, '0.0.0.0', function () {
 });
 
 
-server.bombas = [];
-server.powers = [];
-server.leaderboard = [];
-server.map_2d = [];
-server.player = {
+
+function checkRoomCreate(roomId) {
+    return new Promise(function (resolve, reject) {
+        try {
+            if (room_data[roomId] == undefined) { // init room data
+                room_data[roomId] = JSON.parse(JSON.stringify(init_data))
+                let fileContent = fs.readFileSync(path.resolve(__dirname + map + 'mapa.json'), 'utf8')
+                room_data[roomId].mapa = JSON.parse(fileContent)["layers"][0]
+                let n = 0;
+                room_data[roomId].mapa['data'].forEach(layer => {
+                    if (layer == 2) {
+                        let number = Math.random() * 10;
+                        if (number > 6) { // for test 0 real 6
+                            room_data[roomId].mapa['data'][n] = 0;
+                        } else {
+                            let ran_number = Math.random() * 10;
+                            if (ran_number > 6) {
+                                room_data[roomId].mapa['data'][n] = 2;
+                            } else {
+                                room_data[roomId].mapa['data'][n] = 3;
+                            }
+                        }
+                    }
+                    n += 1;
+                });
+                room_data[roomId].map_2d = _.chunk(Array.from(Array(room_data[roomId].mapa.data.length).keys()), room_data[roomId].mapa.width)
+                resolve("created room")
+            } else {
+                resolve("already have room")
+            }
+        } catch (error) {
+            reject(error)
+        }
+
+    })
 
 }
-io.on('connection', function (socket) {
-    
-    socket.lifes = 3;
-    socket.kills = 0;
 
-    socket.emit('lifes', socket.lifes);
-    socket.emit('mapa', server.mapa, server.map_2d);
-    socket.emit('kill', socket.kills);
+io.on('connection', function (socket) {
+    socket.on("join-room", function (roomId, playerId) {
+
+        checkRoomCreate(roomId)
+            .then((result) => {
+                console.log(`JOIN ROOM : ${roomId}`);
+                console.log(`ROOM STATUS : ${result}`)
+                socket.join(roomId);
+                socket.lifes = 3;
+                socket.kills = 0;
+                socket.roomId = roomId
+                socket.emit('lifes', socket.lifes);
+                socket.emit('mapa', room_data[roomId].mapa, room_data[roomId].map_2d);
+                socket.emit('kill', socket.kills);
+            })
+            .catch((error) => {
+                console.log(`JOIN ROOM : ${roomId}`);
+                console.log(`ROOM STATUS : ${error}`)
+            })
+
+    })
     socket.on('powers', function () {
-        socket.emit('powers', server.powers);
+        socket.emit('powers', room_data[socket.roomId].powers);
     });
-    socket.on('user', function (data, pj, playerId) {
+    socket.on('user', function (data, pj, playerId, roomId) {
+        // console.log(roomId);
         socket.emit("newID", playerId, data, pj);
         socket.emit("allplayers", getAllPlayer(socket.id));
     });
@@ -129,14 +146,14 @@ io.on('connection', function (socket) {
         socket.player = data;
         socket.player.timeShield = 10000
         socket.player.timeShieldCount = 0
-        server.player[data.id] = data
-        socket.broadcast.emit("new_player", data);
-        let leader = getLeaderBoard();
-        if (server.leaderboard != leader) {
-            server.leaderboard = leader;
-            io.emit('leaderboard', leader);
+        room_data[socket.roomId].player[data.id] = data
+        socket.to(socket.roomId).broadcast.emit("new_player", data);
+        let leader = getLeaderBoard(socket.roomId);
+        if (room_data[socket.roomId].leaderboard != leader) {
+            room_data[socket.roomId].leaderboard = leader;
+            io.to(socket.roomId).emit('leaderboard', leader);
         } else {
-            socket.emit('leaderboard', server.leaderboard);
+            socket.emit('leaderboard', room_data[socket.roomId].leaderboard);
         }
     });
 
@@ -164,14 +181,14 @@ io.on('connection', function (socket) {
                 dir: p.dir,
                 animaciones: { stop: data.animaciones.stop }
             };
-            socket.broadcast.emit("mover", pack);
+            socket.to(socket.roomId).broadcast.emit("mover", pack);
         }
     });
     socket.on('newBomb', function (data) {
         if (socket.player) {
             socket.player.numBomb -= 1;
             let pack = { id: socket.player.id, x: data.x, y: data.y, bombId: uuidv4() }
-            io.emit('newBomb', pack);
+            io.to(socket.roomId).emit('newBomb', pack);
         }
     });
 
@@ -179,10 +196,9 @@ io.on('connection', function (socket) {
     socket.on('kickBomb', function ({ currentPosition, nextPosition, direction, bombId }) {
         if (socket.player) {
             var map2d = _.chunk(
-                server.mapa.data,
-                server.mapa.width
+                room_data[socket.roomId].mapa.data,
+                room_data[socket.roomId].mapa.width
             );
-
             var x = Math.floor(nextPosition.x / 32);
             var y = Math.floor(nextPosition.y / 32);
             var statusContinue = true;
@@ -307,7 +323,7 @@ io.on('connection', function (socket) {
             }
 
             if (countBox != 0) {
-                io.emit("kickBomb", {
+                io.to(socket.roomId).emit("kickBomb", {
                     currentPosition,
                     nextPosition,
                     direction,
@@ -327,10 +343,10 @@ io.on('connection', function (socket) {
             if (player.dead == false) {
                 socket.kills += 1;
                 socket.emit('kill', socket.kills);
-                let leader = getLeaderBoard();
-                if (server.leaderboard != leader) {
-                    server.leaderboard = leader;
-                    io.emit('leaderboard', server.leaderboard);
+                let leader = getLeaderBoard(socket.roomId);
+                if (room_data[socket.roomId].leaderboard != leader) {
+                    room_data[socket.roomId].leaderboard = leader;
+                    io.to(socket.roomId).emit('leaderboard', room_data[socket.roomId].leaderboard);
                 }
             }
 
@@ -341,7 +357,7 @@ io.on('connection', function (socket) {
         var player = getPlayerID(playerId2)
         if (player) {
             if (player.dead == false) {
-                io.emit("killfeed", server.player[playerId1], server.player[playerId2])
+                io.to(socket.roomId).emit("killfeed", room_data[socket.roomId].player[playerId1], room_data[socket.roomId].player[playerId2])
             }
         }
 
@@ -351,17 +367,16 @@ io.on('connection', function (socket) {
             socket.player.numBomb += 1;
     });
     socket.on('eliminatePower', function (index, player) {
-        if (server.powers[index] != -1) {
+        if (room_data[socket.roomId].powers[index] != -1) {
             socket.player = player;
-            socket.broadcast.emit('actualizarPower', player, index);
-            server.powers[index] = -1;
+            socket.to(socket.roomId).broadcast.emit('actualizarPower', player, index);
+            room_data[socket.roomId].powers[index] = -1;
         }
     });
     socket.on('destroyBlock', function (data) {
 
-
-        if (server.mapa['data'][data] != 0) {
-            server.mapa['data'][data] = 0;
+        if (room_data[socket.roomId].mapa['data'][data] != 0) {
+            room_data[socket.roomId].mapa['data'][data] = 0;
             // TODO: Drop rate item edit here
             if (getRndInteger(1, 100) >= 0) { // drop item 25% rate
                 let ran = getRndInteger(0, 24);
@@ -370,15 +385,15 @@ io.on('connection', function (socket) {
                 else if (ran <= 15) typePower = 1;
                 else if (ran <= 20) typePower = 2;
                 else if (ran <= 24) typePower = 3;
-                io.emit('generatePosPower', { id: data, type: typePower });
-                server.powers[data] = typePower;
+                io.to(socket.roomId).emit('generatePosPower', { id: data, type: typePower });
+                room_data[socket.roomId].powers[data] = typePower;
             }
             else {
-                io.emit('generatePosPower', { id: data, type: -1 });
-                server.powers[data] = -1;
+                io.to(socket.roomId).emit('generatePosPower', { id: data, type: -1 });
+                room_data[socket.roomId].powers[data] = -1;
             }
 
-            socket.broadcast.emit('destroyBlock', data);
+            socket.to(socket.roomId).broadcast.emit('destroyBlock', data);
         }
     });
     socket.on('dead', function (id) {
@@ -390,17 +405,17 @@ io.on('connection', function (socket) {
                 socket.lifes -= 1;
                 socket.emit('lifes', socket.lifes);
             }
-            io.emit('dead', player.id);
+            io.to(socket.roomId).emit('dead', player.id);
         }
     });
     socket.on('delete', function () {
         if (socket.player) {
             if (socket.lifes < 0) {
                 delete socket.player;
-                let leader = getLeaderBoard();
-                if (server.leaderboard != leader) {
-                    server.leaderboard = leader;
-                    io.emit('leaderboard', server.leaderboard);
+                let leader = getLeaderBoard(socket.roomId);
+                if (room_data[socket.roomId].leaderboard != leader) {
+                    room_data[socket.roomId].leaderboard = leader;
+                    io.to(socket.roomId).emit('leaderboard', room_data[socket.roomId].leaderboard);
                 }
                 socket.emit('inicio');
             } else {
@@ -415,7 +430,7 @@ io.on('connection', function (socket) {
                 cambiarPos(c.x, c.y, socket.player);
                 setTimeout(
                     function () {
-                        io.emit('new_player', socket.player)
+                        io.to(socket.roomId).emit('new_player', socket.player)
                     }, 3000);
             }
         }
@@ -426,12 +441,12 @@ io.on('connection', function (socket) {
         else
             if (socket.player) {
                 socket.player.dead = true;
-                socket.broadcast.emit('dead', socket.player.id);
+                socket.to(socket.roomId).broadcast.emit('dead', socket.player.id);
                 delete socket.player;
-                let leader = getLeaderBoard();
-                if (server.leaderboard != leader) {
-                    server.leaderboard = leader;
-                    io.emit('leaderboard', server.leaderboard);
+                let leader = getLeaderBoard(socket.roomId);
+                if (room_data[socket.roomId].leaderboard != leader) {
+                    room_data[socket.roomId].leaderboard = leader;
+                    io.to(socket.roomId).emit('leaderboard', room_data[socket.roomId].leaderboard);
                 }
             }
     });
@@ -476,15 +491,19 @@ function posicionRandom() {
     }
     return c;
 }
-function getLeaderBoard() {
+function getLeaderBoard(roomId) {
     let player, kills;
     let players = [];
     Object.keys(io.sockets.connected).forEach(function (socketID) {
-        player = io.sockets.connected[socketID].player;
-        if (player) {
-            kills = io.sockets.connected[socketID].kills;
-            players.push({ kills, user: player.user, id: player.id });
+        if (io.sockets.connected[socketID].roomId == roomId) {
+            player = io.sockets.connected[socketID].player;
+            if (player) {
+
+                kills = io.sockets.connected[socketID].kills;
+                players.push({ kills, user: player.user, id: player.id });
+            }
         }
+
     });
     players.sort(function (a, b) {
         if (a.kills < b.kills) {

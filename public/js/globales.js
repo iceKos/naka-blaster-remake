@@ -1,3 +1,9 @@
+let searchParams = new URLSearchParams(window.location.search);
+
+const data = window.location.pathname.split('/')
+var roomId = data[2]
+var playerId = data[3]
+console.log({ roomId, playerId });
 // variables globales
 var debug = {
     hit: false,
@@ -12,6 +18,9 @@ var dir = {
     RIGHT: "RIGHT",
     LEFT: "LEFT"
 };
+
+
+
 canvas.width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
 canvas.height = window.innerHeight || document.documentElement.clientWidth || document.body.clientWidth;
 function resizeCanvas() {
@@ -21,9 +30,15 @@ function resizeCanvas() {
 }
 
 
+
 function getRndInteger(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
+
+io.on('connect', function () {
+    // join room here
+    io.emit("join-room", roomId, playerId)
+});
 io.on('connect_failed', function () {
     console.log('Connect failed');
     io.connect();

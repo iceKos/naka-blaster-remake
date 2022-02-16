@@ -35,3 +35,16 @@ node server/app.js
 - [ ] add process close area
 
 
+### link player
+
+room 1
+http://localhost:8080/public/1/player-id-1
+http://localhost:8080/public/1/player-id-2
+http://localhost:8080/public/1/player-id-3
+http://localhost:8080/public/1/player-id-4
+
+room 2
+http://localhost:8080/public/2/player-id-1
+http://localhost:8080/public/2/player-id-2
+http://localhost:8080/public/2/player-id-3
+http://localhost:8080/public/2/player-id-4
