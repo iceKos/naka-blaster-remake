@@ -143,23 +143,33 @@ io.on('connection', function (socket) {
         socket.emit("allplayers", getAllPlayer(socket.id, socket.roomId));
     });
     socket.on("new_player", function (data) {
-        socket.player = data;
-        socket.player.timeShield = 10000
-        socket.player.timeShieldCount = 0
-        room_data[socket.roomId].player[data.id] = data
-        socket.to(socket.roomId).broadcast.emit("new_player", data);
-        let leader = getLeaderBoard(socket.roomId);
-        if (room_data[socket.roomId].leaderboard != leader) {
-            room_data[socket.roomId].leaderboard = leader;
-            io.to(socket.roomId).emit('leaderboard', leader);
+
+        // check player data if exist have to force disconnect
+        if (room_data[socket.roomId].player[data.id] == undefined) {
+            socket.player = data;
+            socket.player.timeShield = 10000
+            socket.player.timeShieldCount = 0
+            room_data[socket.roomId].player[data.id] = data
+            socket.to(socket.roomId).broadcast.emit("new_player", data);
+            let leader = getLeaderBoard(socket.roomId);
+            if (room_data[socket.roomId].leaderboard != leader) {
+                room_data[socket.roomId].leaderboard = leader;
+                io.to(socket.roomId).emit('leaderboard', leader);
+            } else {
+                socket.emit('leaderboard', room_data[socket.roomId].leaderboard);
+            }
         } else {
-            socket.emit('leaderboard', room_data[socket.roomId].leaderboard);
+            
+            socket.disconnect()
+            console.log("duplicate login Player");
         }
+
     });
 
     socket.on("time_out_shield", function (playerId, timeShieldCount) {
         if (socket.player) {
             socket.player.timeShieldCount = timeShieldCount;
+            room_data[socket.roomId].player[socket.player.id] = socket.player
             socket.emit('time_out_shield', playerId, timeShieldCount)
         }
     })
@@ -167,6 +177,7 @@ io.on('connection', function (socket) {
     socket.on("mover", function (data) {
         let p = socket.player;
         if (p) {
+
             p.x = data.x;
             p.y = data.y;
             p.hitbox.x = data.x + p.posHitX;
@@ -181,6 +192,8 @@ io.on('connection', function (socket) {
                 dir: p.dir,
                 animaciones: { stop: data.animaciones.stop }
             };
+            // update player state
+            room_data[socket.roomId].player[p.id] = p
             socket.to(socket.roomId).broadcast.emit("mover", pack);
         }
     });
@@ -188,6 +201,7 @@ io.on('connection', function (socket) {
         if (socket.player) {
             socket.player.numBomb -= 1;
             let pack = { id: socket.player.id, x: data.x, y: data.y, bombId: uuidv4() }
+            room_data[socket.roomId].player[socket.player.id] = socket.player
             io.to(socket.roomId).emit('newBomb', pack);
         }
     });
@@ -365,10 +379,12 @@ io.on('connection', function (socket) {
     socket.on('sumBomb', function () {
         if (socket.player)
             socket.player.numBomb += 1;
+        room_data[socket.roomId].player[socket.player.id] = socket.player
     });
     socket.on('eliminatePower', function (index, player) {
         if (room_data[socket.roomId].powers[index] != -1) {
             socket.player = player;
+            room_data[socket.roomId].player[socket.player.id] = socket.player
             socket.to(socket.roomId).broadcast.emit('actualizarPower', player, index);
             room_data[socket.roomId].powers[index] = -1;
         }
@@ -378,7 +394,7 @@ io.on('connection', function (socket) {
         if (room_data[socket.roomId].mapa['data'][data] != 0) {
             room_data[socket.roomId].mapa['data'][data] = 0;
             // TODO: Drop rate item edit here
-            if (getRndInteger(1, 100) >= 0) { // drop item 25% rate
+            if (getRndInteger(1, 100) >= 75) { // drop item 25% rate
                 let ran = getRndInteger(0, 24);
                 let typePower;
                 if (ran < 1) typePower = 1;
@@ -426,6 +442,7 @@ io.on('connection', function (socket) {
                 socket.player.numMaxBomb = 1
                 socket.player.numBomb = 1
                 socket.player.vel = 2
+                room_data[socket.roomId].player[socket.player.id] = socket.player
                 let c = posicionRandom();
                 cambiarPos(c.x, c.y, socket.player);
                 setTimeout(
@@ -436,12 +453,15 @@ io.on('connection', function (socket) {
         }
     });
     socket.on('disconnect', function (reason) {
+        
         if (reason === 'io server disconnect')
             socket.connect();
         else
             if (socket.player) {
                 socket.player.dead = true;
+                room_data[socket.roomId].player[socket.player.id] = socket.player
                 socket.to(socket.roomId).broadcast.emit('dead', socket.player.id);
+                delete room_data[socket.roomId].player[socket.player.id]
                 delete socket.player;
                 let leader = getLeaderBoard(socket.roomId);
                 if (room_data[socket.roomId].leaderboard != leader) {
