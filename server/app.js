@@ -140,7 +140,7 @@ io.on('connection', function (socket) {
     socket.on('user', function (data, pj, playerId, roomId) {
         // console.log(roomId);
         socket.emit("newID", playerId, data, pj);
-        socket.emit("allplayers", getAllPlayer(socket.id));
+        socket.emit("allplayers", getAllPlayer(socket.id, socket.roomId));
     });
     socket.on("new_player", function (data) {
         socket.player = data;
@@ -338,7 +338,7 @@ io.on('connection', function (socket) {
         socket.emit('msPong', data);
     });
     socket.on('aumentarKill', function (playerId1, playerId2) {
-        var player = getPlayerID(playerId2)
+        var player = getPlayerID(playerId2, socket.roomId)
         if (player) {
             if (player.dead == false) {
                 socket.kills += 1;
@@ -354,7 +354,7 @@ io.on('connection', function (socket) {
 
     });
     socket.on('killfeed', function (playerId1, playerId2) {
-        var player = getPlayerID(playerId2)
+        var player = getPlayerID(playerId2, socket.roomId);
         if (player) {
             if (player.dead == false) {
                 io.to(socket.roomId).emit("killfeed", room_data[socket.roomId].player[playerId1], room_data[socket.roomId].player[playerId2])
@@ -397,7 +397,7 @@ io.on('connection', function (socket) {
         }
     });
     socket.on('dead', function (id) {
-        var player = getPlayerID(id);
+        var player = getPlayerID(id, socket.roomId);
         if (player) {
             player.dead = true;
             player.timeShieldCount = 0
@@ -462,22 +462,28 @@ io.on('connection', function (socket) {
         }
     });
 });
-function getAllPlayer(id) {
+function getAllPlayer(id, roomId) {
     var players = [];
     Object.keys(io.sockets.connected).forEach(function (socketID) {
-        var player = io.sockets.connected[socketID].player;
-        if (player && socketID != id) players.push(player);
+        if (io.sockets.connected[socketID].roomId == roomId) {
+            var player = io.sockets.connected[socketID].player;
+            if (player && socketID != id) players.push(player);
+        }
+
     });
     return players;
 }
-function getPlayerID(id) {
+function getPlayerID(id, roomId) {
     let player;
     var returnPlayer;
     Object.keys(io.sockets.connected).forEach(function (socketID) {
-        player = io.sockets.connected[socketID].player;
-        if (player && player.id == id) {
-            returnPlayer = player;
+        if (io.sockets.connected[socketID].roomId == roomId) {
+            player = io.sockets.connected[socketID].player;
+            if (player && player.id == id) {
+                returnPlayer = player;
+            }
         }
+
     });
     return returnPlayer;
 }
