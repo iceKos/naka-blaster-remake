@@ -64,7 +64,9 @@ function initialRoomData(room_id) {
     }
 }
 
-app.get('/', function (req, res) {
+app.get('/public/:roomId/:user_id', function (req, res) {
+    var { roomId, user_id } = req.params
+    console.log(roomId, user_id);
     res.sendFile(path.resolve(__dirname + public + '/index.html')); // si se pide / llama al index
 });
 
@@ -86,7 +88,6 @@ fs.readFile(path.resolve(__dirname + map + 'mapa.json'), 'utf8', function (err, 
                     server.mapa["data"][n] = 3;
                 }
             }
-
         }
         n += 1;
     });
@@ -96,7 +97,7 @@ fs.readFile(path.resolve(__dirname + map + 'mapa.json'), 'utf8', function (err, 
 
 });
 
-// funcion para escuchar el servidor y abrirlo
+// Start server
 server.listen(process.env.PORT || 8080, '0.0.0.0', function () {
     console.log('Start port : ' + server.address().port);
 });
@@ -110,12 +111,10 @@ server.player = {
 
 }
 io.on('connection', function (socket) {
+    
     socket.lifes = 3;
     socket.kills = 0;
 
-    // console.log("==============================================================");
-    // console.log(_.chunk(server.mapa.data, server.mapa.width).map(x => x.join(",")).join("\n"));
-    // console.log("==============================================================");
     socket.emit('lifes', socket.lifes);
     socket.emit('mapa', server.mapa, server.map_2d);
     socket.emit('kill', socket.kills);
