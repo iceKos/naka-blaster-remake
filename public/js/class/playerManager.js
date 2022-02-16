@@ -41,15 +41,10 @@ playerManager.Update = function () {
 }
 
 // Kick bomb Function
-playerManager.kickBomb = function (bomb, lastHitbox) {
+playerManager.kickBomb = function (bomb, directionPlayer) {
     var bombPosition = {
         x: Math.floor(bomb.hitbox.x / 32),
         y: Math.floor(bomb.hitbox.y / 32),
-    };
-
-    var lastHitboxPosition = {
-        x: Math.floor(lastHitbox.x / 32),
-        y: Math.floor(lastHitbox.y / 32),
     };
 
     // clear kick status can kick again
@@ -57,57 +52,8 @@ playerManager.kickBomb = function (bomb, lastHitbox) {
         this.status_kick = false;
     }, 500);
 
-    if (lastHitboxPosition.y == bombPosition.y) {
-        if (lastHitboxPosition.x < bombPosition.x) {
-            // kick left to right
-            io.emit("kickBomb", {
-                currentPosition: {
-                    x: bombPosition.x * 32,
-                    y: bombPosition.y * 32,
-                },
-                nextPosition: {
-                    x: (bombPosition.x + 1) * 32,
-                    y: bombPosition.y * 32,
-                },
-                direction: "LEFT_TO_RIGHT",
-                bombId: bomb.id
-            });
-        }
-        if (lastHitboxPosition.x > bombPosition.x) {
-            // kick right to left
-            io.emit("kickBomb", {
-                currentPosition: {
-                    x: bombPosition.x * 32,
-                    y: bombPosition.y * 32,
-                },
-                nextPosition: {
-                    x: (bombPosition.x - 1) * 32,
-                    y: bombPosition.y * 32,
-                },
-                direction: "RIGHT_TO_LEFT",
-                bombId: bomb.id
-            });
-        }
-    }
-
-    if (lastHitboxPosition.x == bombPosition.x) {
-        if (lastHitboxPosition.y < bombPosition.y) {
-            // kick top to bottom
-            io.emit("kickBomb", {
-                currentPosition: {
-                    x: bombPosition.x * 32,
-                    y: bombPosition.y * 32,
-                },
-                nextPosition: {
-                    x: bombPosition.x * 32,
-                    y: (bombPosition.y + 1) * 32,
-                },
-                direction: "TOP_TO_BOTTOM",
-                bombId: bomb.id
-            });
-        }
-        if (lastHitboxPosition.y > bombPosition.y) {
-            // kick bottom to top
+    switch (directionPlayer) {
+        case "UP": {
             io.emit("kickBomb", {
                 currentPosition: {
                     x: bombPosition.x * 32,
@@ -120,7 +66,55 @@ playerManager.kickBomb = function (bomb, lastHitbox) {
                 direction: "BOTTOM_TO_TOP",
                 bombId: bomb.id
             });
+            break;
         }
+        case "DOWN": {
+            io.emit("kickBomb", {
+                currentPosition: {
+                    x: bombPosition.x * 32,
+                    y: bombPosition.y * 32,
+                },
+                nextPosition: {
+                    x: bombPosition.x * 32,
+                    y: (bombPosition.y + 1) * 32,
+                },
+                direction: "TOP_TO_BOTTOM",
+                bombId: bomb.id
+            });
+            break;
+        }
+        case "LEFT": {
+            io.emit("kickBomb", {
+                currentPosition: {
+                    x: bombPosition.x * 32,
+                    y: bombPosition.y * 32,
+                },
+                nextPosition: {
+                    x: (bombPosition.x - 1) * 32,
+                    y: bombPosition.y * 32,
+                },
+                direction: "RIGHT_TO_LEFT",
+                bombId: bomb.id
+            });
+            break;
+        }
+        case "RIGHT": {
+            io.emit("kickBomb", {
+                currentPosition: {
+                    x: bombPosition.x * 32,
+                    y: bombPosition.y * 32,
+                },
+                nextPosition: {
+                    x: (bombPosition.x + 1) * 32,
+                    y: bombPosition.y * 32,
+                },
+                direction: "LEFT_TO_RIGHT",
+                bombId: bomb.id
+            });
+            break;
+        }
+        default:
+            break;
     }
 
 }
@@ -131,7 +125,6 @@ playerManager.solido = function (x, y, player) {
     let esSolido = false, temporal;
     var fix = false;
     temporal = player.hitbox.copy();
-    var lastHitbox = { x: temporal.x, y: temporal.y };
     temporal.x += x;
     temporal.y += y;
     let llaves = Object.keys(bombManager.bombs);
@@ -150,7 +143,7 @@ playerManager.solido = function (x, y, player) {
                 if (this.status_kick == false && element.kick_status == false) {
                     element.kick_status = true
                     this.status_kick = true;
-                    this.kickBomb(element, lastHitbox);
+                    this.kickBomb(element, player.dir);
                 }
                 break;
             }
@@ -289,7 +282,7 @@ playerManager.mover = function () {
             solido = playerManager.solido(this.personajes[this.id].vel, 0, this.personajes[this.id]);
             // solido = playerManager.solido(200, 0, this.personajes[this.id]);
             if (!solido.s) {
-                this.personajes[this.id].dir = dir.DERECHA;
+                this.personajes[this.id].dir = dir.RIGHT;
                 this.personajes[this.id].animaciones.stop = false;
 
                 if (!solido.f) this.personajes[this.id].mov(this.personajes[this.id].vel, 0);
@@ -309,7 +302,7 @@ playerManager.mover = function () {
 
             solido = playerManager.solido(-this.personajes[this.id].vel, 0, this.personajes[this.id]);
             if (!solido.s) {
-                this.personajes[this.id].dir = dir.IZQUIERDA;
+                this.personajes[this.id].dir = dir.LEFT;
                 this.personajes[this.id].animaciones.stop = false;
                 if (!solido.f) this.personajes[this.id].mov(-this.personajes[this.id].vel, 0);
                 this.pack = {
@@ -326,7 +319,7 @@ playerManager.mover = function () {
         else if ((keys[87] || keys[38]) && this.personajes[this.id].mov) {
             solido = playerManager.solido(0, -this.personajes[this.id].vel, this.personajes[this.id]);
             if (!solido.s) {
-                this.personajes[this.id].dir = dir.ARRIBA;
+                this.personajes[this.id].dir = dir.UP;
                 this.personajes[this.id].animaciones.stop = false;
                 if (!solido.f) this.personajes[this.id].mov(0, -this.personajes[this.id].vel);
                 this.pack = {
@@ -343,7 +336,7 @@ playerManager.mover = function () {
         else if ((keys[83] || keys[40]) && this.personajes[this.id].mov) {
             solido = playerManager.solido(0, this.personajes[this.id].vel, this.personajes[this.id]);
             if (!solido.s) {
-                this.personajes[this.id].dir = dir.ABAJO;
+                this.personajes[this.id].dir = dir.DOWN;
                 this.personajes[this.id].animaciones.stop = false;
                 if (!solido.f) this.personajes[this.id].mov(0, this.personajes[this.id].vel);
                 this.pack = {

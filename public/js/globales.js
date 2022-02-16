@@ -7,10 +7,10 @@ var io = io.connect(),
     canvas = document.getElementById("myCanvas"),
     keys = [];
 var dir = {
-    ARRIBA: "arriba",
-    ABAJO: "abajo",
-    DERECHA: "derecha",
-    IZQUIERDA: "izquierda"
+    UP: "UP",
+    DOWN: "DOWN",
+    RIGHT: "RIGHT",
+    LEFT: "LEFT"
 };
 canvas.width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
 canvas.height = window.innerHeight || document.documentElement.clientWidth || document.body.clientWidth;
