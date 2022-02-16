@@ -30,7 +30,7 @@ node server/app.js
 - [x] reset skill after dead
 - [x] add killfeed
 - [x] change array player list to player objects
-- [ ] separate room and data in room
+- [x] separate room and data in room
 - [ ] player AFK has other player kill but never die
 - [ ] add process close area
 
