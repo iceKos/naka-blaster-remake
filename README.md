@@ -31,6 +31,7 @@ node server/app.js
 - [x] add killfeed
 - [x] change array player list to player objects
 - [x] separate room and data in room
+- [ ] Create state player move drop bomb and other
 - [ ] player AFK has other player kill but never die
 - [ ] add process close area
 
