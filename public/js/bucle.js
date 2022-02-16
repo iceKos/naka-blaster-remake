@@ -43,7 +43,7 @@ var buclePrincipal = {
             else buclePrincipal.ctx.fillText(buclePrincipal.dibujarFps, 0, 17);
         } else {
             buclePrincipal.ctx.fillStyle = '#FFFFFF';
-            buclePrincipal.ctx.fillText("MS: " + buclePrincipal.ping, 0, 17);
+            buclePrincipal.ctx.fillText("MS: " + buclePrincipal.ping, 5, canvas.height - 20);
         }
         buclePrincipal.fps++;
     },

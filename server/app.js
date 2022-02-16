@@ -484,7 +484,7 @@ function getLeaderBoard() {
         player = io.sockets.connected[socketID].player;
         if (player) {
             kills = io.sockets.connected[socketID].kills;
-            players.push({ kills, user: player.user });
+            players.push({ kills, user: player.user, id: player.id });
         }
     });
     players.sort(function (a, b) {

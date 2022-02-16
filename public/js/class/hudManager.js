@@ -34,7 +34,7 @@ hudManager.Draw = function (ctx) {
             if (hudManager.killFeed[i].p1.id == hudManager.killFeed[i].p2.id) {
                 hudManager.textKillFeed.push(hudManager.killFeed[i].p1.user + " Kill themself.");
             } else {
-              hudManager.textKillFeed.push(hudManager.killFeed[i].p1.user + " Kill " + hudManager.killFeed[i].p2.user);
+                hudManager.textKillFeed.push(hudManager.killFeed[i].p1.user + " Kill " + hudManager.killFeed[i].p2.user);
             }
 
             setTimeout(function () {
@@ -74,7 +74,7 @@ hudManager.Draw = function (ctx) {
             30
         );
     }
-
+    // ===================== killFeed =================
 
     // =================== lifes UI =====================
     if (hudManager.lifes >= 0) {
@@ -82,6 +82,7 @@ hudManager.Draw = function (ctx) {
             ctx.drawImage(animationManager.imagenes["heart"][0], canvas.width - i * 20 - 32, 10);
         }
     }
+    // =================== lifes UI =====================
 
     //=================== Kill UI ===================
     let text = "Kills: " + hudManager.kills;
@@ -90,23 +91,52 @@ hudManager.Draw = function (ctx) {
     ctx.fillRect(canvas.width - (width + 45 + hudManager.lifes * 20), 10, width + 10, 30);
     ctx.fillStyle = '#FFFFFF';
     ctx.fillText(text, canvas.width - (width + 40 + hudManager.lifes * 20), 33);
+    //=================== Kill UI ===================
 
-    // =================== Leaderboard UI ===================
+    // ================== Leaderboard UI TOP 5 PLAYER ===================
+    var panel_startX = 5
+    var panel_starty = 5
+    var panel_width = 240
+    var panel_height = 300
+    ctx.fillStyle = "rgba(0,0,0,1)";
+    ctx.font = "20px BADABB";
+    ctx.globalAlpha = 0.8;
+    ctx.drawImage(imgInterface[1], 0, 0, 590, 635, panel_startX, panel_starty, panel_width, panel_height);
+    ctx.globalAlpha = 1;
+    ctx.textAlign = "center";
+    ctx.fillText(" TOP PLAYER ", panel_startX + (panel_width / 2), 32);
+    ctx.fillStyle = "#FFFFFF";
+    ctx.fillText(" TOP PLAYER ", panel_startX + (panel_width / 2), 31);
+    ctx.font = "25px BADABB";
+    ctx.textAlign = "start";
 
-    // have to check max of user name
-    var list_user_length = Math.max(...this.leaderboard.map(x => String(x.user).length))
-    let widthBoxLeaderborad = ctx.measureText(hudManager.genWord(list_user_length)).width;
-    ctx.fillStyle = 'rgba(0,0,0,0.6)';
-    ctx.fillRect(0, 0, widthBoxLeaderborad + 50, (40 * this.leaderboard.length) + 60);
     for (let i = 0; i < this.leaderboard.length; i++) {
-        ctx.fillStyle = '#FFFFFF';
-        ctx.fillText((i + 1) + '. ' + this.leaderboard[i].user + '[' + this.leaderboard[i].kills + ']', 20, (55 + 30 * i) + 10);
+        try {
+            let player =
+                this.leaderboard[i].user.length > 9
+                    ? this.leaderboard[i].user.substr(0, 7) + "..."
+                    : this.leaderboard[i].user;
 
-
+            if (playerManager.id == this.leaderboard[i].id) {
+                ctx.fillStyle = "rgb(255 234 111)";
+            } else {
+                ctx.fillStyle = "#FFFFFF";
+            }
+            ctx.fillText(
+                `${i + 1}. ${player}`,
+                20,
+                70 + 50 * i
+            );
+            ctx.textAlign = "end";
+            ctx.fillText(`${this.leaderboard[i].kills} Kills `, panel_width - 5,
+                70 + 50 * i)
+            ctx.textAlign = "start";
+        } catch (error) { }
     }
+    ctx.font = "20px BADABB";
+    // ================== Leaderboard UI TOP 5 PLAYER ===================
 
-    // ======================== Buff ===========================
-
+    // ======================== Buff UI ===========================
     let buffEffect = [
         {
             label: "Power    LV", properties: "power", y: 122,
@@ -196,6 +226,7 @@ hudManager.Draw = function (ctx) {
             40
         );
     })
+    // ======================== Buff UI ===========================
 
     // ============================ render debug state ================================
     var my_player = playerManager.personajes[playerManager.id];
