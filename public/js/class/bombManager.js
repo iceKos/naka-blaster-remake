@@ -309,6 +309,8 @@ io.on("kickBomb", function ({ currentPosition, nextPosition, direction, bombId }
     if (findIndexBomById >= 0) {
         soundKickBomb.play()
         var bomb = bombManager.bombs[findIndexBomById]
+        console.log(bomb.x, nextPosition.x, bomb.y, nextPosition.y);
+        bomb.kick_status = true
         bomb.move_when_kick = true
         bomb.nextPosition = {
             x: nextPosition.x,

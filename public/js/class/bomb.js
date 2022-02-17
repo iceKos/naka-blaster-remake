@@ -35,9 +35,9 @@ class bomb {
     }
     Update() {
         this.animaciones.Update(0, 3);
-        this.kick_status = false
+        
         if (this.move_when_kick == true && this.nextPosition.x != null && this.nextPosition.y != null && this.kick_direction != null) {
-
+            
             switch (this.kick_direction) {
                 case "TOP_TO_BOTTOM": {
                     // change only y +
@@ -46,6 +46,7 @@ class bomb {
                     if (this.y >= this.nextPosition.y) {
                         this.y = this.nextPosition.y
                         this.hitbox.y = this.y
+                        this.kick_status = false
                         this.move_when_kick = false
                         this.nextPosition = {
                             x: null,
@@ -62,6 +63,7 @@ class bomb {
                     if (this.y <= this.nextPosition.y) {
                         this.y = this.nextPosition.y
                         this.hitbox.y = this.y
+                        this.kick_status = false
                         this.move_when_kick = false
                         this.nextPosition = {
                             x: null,
@@ -78,6 +80,7 @@ class bomb {
                     if (this.x >= this.nextPosition.x) {
                         this.x = this.nextPosition.x
                         this.hitbox.x = this.x
+                        this.kick_status = false
                         this.move_when_kick = false
                         this.nextPosition = {
                             x: null,
@@ -94,6 +97,7 @@ class bomb {
                     if (this.x <= this.nextPosition.x) {
                         this.x = this.nextPosition.x
                         this.hitbox.x = this.x
+                        this.kick_status = false
                         this.move_when_kick = false
                         this.nextPosition = {
                             x: null,

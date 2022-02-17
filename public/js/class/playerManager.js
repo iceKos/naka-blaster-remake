@@ -141,7 +141,6 @@ playerManager.solido = function (x, y, player) {
                     break;
                 }
                 if (this.status_kick == false && element.kick_status == false) {
-                    element.kick_status = true
                     this.status_kick = true;
                     this.kickBomb(element, player.dir);
                 }
