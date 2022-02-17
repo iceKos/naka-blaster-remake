@@ -87,6 +87,10 @@ animationManager.LoadContent = function (callback) {
     this.imagenes["winner"] = [];
     ruta["winner"] = [];
     ruta["winner"].push("/images/WInner.png");
+    // time ui
+    this.imagenes["time_ui"] = [];
+    ruta["time_ui"] = [];
+    ruta["time_ui"].push("/images/time_ui.png");
     // final para cargar todas las rutas
     Object.keys(this.imagenes).forEach(element => {
         this.personajes[element] = [];

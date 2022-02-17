@@ -39,7 +39,6 @@ screenManager.LoadContent = function (screen) {
     }
 };
 screenManager.Draw = function (ctx, screen) {
-
     switch (screen) {
 
         case screenManager.screen.GAME:

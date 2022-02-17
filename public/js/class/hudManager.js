@@ -4,9 +4,26 @@ var hudManager = {
     solid: false,
     leaderboard: [],
     killFeed: [],
-    textKillFeed: []
+    textKillFeed: [],
+    time_over: false,
+    isFinalRound: false,
+    count_down: 99,
+    round: 0,
 };
+var play_sound_alert_status = true
+function renderTime(seconds) {
+    var date = new Date(seconds * 1000).toISOString().substr(11, 8);
+    var [hh, mm, ss] = date.split(":");
+    if (hh != "00") {
+        return `${hh}:${mm}:${ss}`;
+    }
 
+    if (mm != "00") {
+        return `${mm}:${ss}`;
+    } else {
+        return ss;
+    }
+}
 
 hudManager.genWord = function (length) {
     var text = "";
@@ -26,6 +43,7 @@ hudManager.Draw = function (ctx) {
     let powerImage = imgPower[1];
     let bombImage = imgPower[2];
     let speedImage = imgPower[3];
+    let time_ui = animationManager.imagenes["time_ui"][0]
 
     // ===================== killFeed =================
     for (let i = 0; i < hudManager.killFeed.length; i++) {
@@ -53,8 +71,8 @@ hudManager.Draw = function (ctx) {
         ctx.fillStyle = "rgba(0,0,0,0.6)";
         roundRect(
             ctx,
-            canvas.width / 2 - (widthText2 / 2 + 40),
-            100 + i * 50,
+            canvas.width / 2 - (widthText2 / 2 + 50),
+            150 + i * 50,
             widthText2 + 60,
             35,
             3,
@@ -64,12 +82,12 @@ hudManager.Draw = function (ctx) {
         ctx.fillText(
             hudManager.textKillFeed[i],
             canvas.width / 2 - widthText2 / 2,
-            125 + i * 50
+            175 + i * 50
         );
         ctx.drawImage(
             animationManager.imagenes["bomb"][0],
-            canvas.width / 2 - (widthText2 / 2 + 30),
-            100 + i * 50,
+            canvas.width / 2 - (widthText2 / 2 + 40),
+            150 + i * 50,
             30,
             30
         );
@@ -268,9 +286,74 @@ hudManager.Draw = function (ctx) {
                 start_debug_y += 50;
             }
         }
-        // ============================ render other player state ================================
-
     };
+    // ============================ render other player state ================================
+
+
+    //============================= TIME UI =======================================
+    var width_canvas_center = canvas.width / 2
+    var widthTop = 230;
+    var startY = 15
+    var heightPanelTime = 100
+
+    ctx.drawImage(
+        time_ui,
+        0,
+        0,
+        widthTop,
+        heightPanelTime,
+        (width_canvas_center - (widthTop / 2)),
+        startY,
+        widthTop,
+        heightPanelTime
+    );
+
+    if (hudManager.time_over != true) {
+
+        if (this.count_down <= 10) {
+
+            if (soundSetting == 0) {
+                sound_alert.pause()
+                play_sound_alert_status = true
+            }
+
+            if (play_sound_alert_status && soundSetting == 1) {
+                sound_alert.play()
+                play_sound_alert_status = false
+            }
+
+            if (this.count_down % 2 == 0) {
+                ctx.fillStyle = "rgba(245, 0, 0, 0.3)";
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.fillStyle = "rgba(245, 0, 0, 1)";
+            } else {
+                ctx.fillStyle = "#FFFFFF";
+            }
+        } else {
+            sound_alert.pause()
+        }
+
+
+        ctx.font = `2em BADABB`;
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(`Round ${this.round}`, canvas.width / 2, 50);
+        ctx.fillText(`${renderTime(this.count_down)}`, canvas.width / 2, 85);
+    } else {
+        ctx.font = `2em BADABB`;
+        ctx.fillStyle = "#FFFFFF";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(`TIME OVER`, canvas.width / 2, ((heightPanelTime / 2) + 15));
+
+        ctx.textAlign = "start";
+        ctx.textBaseline = "alphabetic";
+    }
+    ctx.textAlign = "start";
+    ctx.textBaseline = "alphabetic";
+    ctx.font = "20px BADABB";
+    //============================= TIME UI =======================================
+
 }
 
 function roundRect(ctx, x, y, width, height, radius, fill, stroke) {
@@ -310,6 +393,8 @@ function roundRect(ctx, x, y, width, height, radius, fill, stroke) {
     if (stroke) {
         ctx.stroke();
     }
+
+
 }
 
 
@@ -331,3 +416,15 @@ io.on("killfeed", (player1, player2) => {
         p2: { id: player2.id, user: player2.user },
     });
 })
+io.on("COUNTDOWN", ({ round, sec, isFinalRound }) => {
+    if (hudManager.round != round) {
+
+        play_sound_alert_status = true
+    }
+    hudManager.count_down = sec;
+    hudManager.round = round;
+    hudManager.isFinalRound = isFinalRound;
+});
+io.on("TIME_OVER", ({ message }) => {
+    hudManager.time_over = true;
+});

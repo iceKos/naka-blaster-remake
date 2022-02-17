@@ -69,8 +69,10 @@ class player {
         this.shieldAnimation = new animation(animationManager.imagenes["shield"], 0.1)
     }
     Update() {
+        if (this.dead == false) {
+            this.shieldAnimation.Update(0, 3)
+        }
 
-        this.shieldAnimation.Update(0, 3)
 
         // down
         if (this.dir == dir.DOWN) {
@@ -115,7 +117,7 @@ class player {
                     }
                     ctx.fillText(text, (this.x - ((width / 2))) + (32 / 2) + 5, this.y - 8);
                     this.animaciones.Draw(ctx, this.x + 2.5, this.y, 500, 500, "player");
-                    if (this.undead == true) {
+                    if (this.undead == true && this.dead == false) {
                         this.shieldAnimation.Draw(ctx, this.x, this.y, 500, 500, "shield");
                     }
 

@@ -32,9 +32,8 @@ node server/app.js
 - [x] change array player list to player objects
 - [x] separate room and data in room
 - [x] Check Duplicate Player
-- [ ] Create state player move drop bomb and other
 - [ ] player AFK has other player kill but never die
-- [ ] add process close area
+- [x] add process close area
 
 
 ### link player

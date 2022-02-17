@@ -57,3 +57,9 @@ var soundDead = new Howl({
   loop: false,
   volume: 0.1
 })
+
+var sound_alert = new Howl({
+  src: ['/music/alert_sound_version2.mp3'],
+  loop: true,
+  volume: 0.1,
+})

@@ -169,9 +169,9 @@ playerManager.solido = function (x, y, player) {
 
     // check hit rock or not
     if (!esSolido) {
-        llaves = Object.keys(blockManager.paredes);
+        llaves = Object.keys(blockManager.walls);
         for (let i = 0; i < llaves.length; i++) {
-            element = blockManager.paredes[llaves[i]];
+            element = blockManager.walls[llaves[i]];
             if (element.chocarCon(temporal)) {
                 esSolido = true;
                 break;
@@ -257,9 +257,9 @@ playerManager.estaVacio = function (x, y, atra) {
         }
     }
     if (retorna) {
-        llaves = Object.keys(blockManager.paredes);
+        llaves = Object.keys(blockManager.walls);
         for (let i = 0; i < llaves.length; i++) {
-            element = blockManager.paredes[llaves[i]];
+            element = blockManager.walls[llaves[i]];
             if (element.chocarCon(caja)) {
                 retorna = false;
                 break;
@@ -373,9 +373,9 @@ playerManager.copy = function (data) {
     return copy;
 }
 
-io.on('newID', function (playerId, user, pj) {
+io.on('newID', function (playerId, user, pj, c) {
     playerManager.id = playerId;
-    let c = playerManager.posicionRandom();
+    
     playerManager.personajes[playerManager.id] = new player(playerManager.id, 30, -7, 2, pj, 5, 45, 25, 17, 1, 3000, 1, 10000, 0);
     playerManager.personajes[playerManager.id].user = user;
     playerManager.personajes[playerManager.id].cambiarPos(c.x, c.y);
@@ -390,6 +390,21 @@ io.on('new_player', function (data) {
         //TODO: reset buff here
         playerManager.resetBuff()
         camera.follow(playerManager.personajes[data.id]);
+        let player = playerManager.personajes[playerManager.id];
+        var findBlock = blockManager.walls.find((item) => {
+            if (item != null) {
+                return (
+                    Math.floor(item.x / 32) == Math.floor(player.hitbox.x / 32) &&
+                    Math.floor(item.y / 32) == Math.floor(player.hitbox.y / 32)
+                );
+            } else {
+                return false;
+            }
+        });
+
+        if (findBlock) {
+            io.emit("dead", player.id);
+        }
     }
 });
 

@@ -248,9 +248,9 @@ bombManager.tocarBomb = function (hit) {
         }
     }
     if (!retornar.toco) {
-        llaves = Object.keys(blockManager.paredes);
+        llaves = Object.keys(blockManager.walls);
         for (let i = 0; i < llaves.length; i++) {
-            element = blockManager.paredes[llaves[i]];
+            element = blockManager.walls[llaves[i]];
             if (hit.chocarCon(element)) {
                 retornar.toco = true;
                 break;
@@ -309,7 +309,6 @@ io.on("kickBomb", function ({ currentPosition, nextPosition, direction, bombId }
     if (findIndexBomById >= 0) {
         soundKickBomb.play()
         var bomb = bombManager.bombs[findIndexBomById]
-        console.log(bomb.x, nextPosition.x, bomb.y, nextPosition.y);
         bomb.kick_status = true
         bomb.move_when_kick = true
         bomb.nextPosition = {

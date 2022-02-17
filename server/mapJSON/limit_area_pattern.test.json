@@ -1,0 +1,15 @@
+[
+  {
+    "round": 1,
+    "time_sec": 5
+  },
+  {
+    "round": 2,
+    "time_sec": 5
+  },
+  {
+    "round": 2,
+    "time_sec": 5,
+    "final": true
+  }
+]

@@ -1,7 +1,7 @@
 var blockManager = {
     blocks: [],
     blocks2D: [],
-    paredes: [],
+    walls: [],
     grass: [],
     animationBlocks: [],
     w: 32,
@@ -23,7 +23,7 @@ blockManager.Draw = function (ctx) {
             if (debug.hit) block.Draw(ctx);
         }
     });
-    this.paredes.forEach(pared => {
+    this.walls.forEach(pared => {
         if (camera.x - 32 < pared.x && camera.x + camera.w > pared.x &&
             camera.y - 32 < pared.y && camera.y + camera.h > pared.y) {
             ctx.drawImage(animationManager.imagenes['pared'][0], pared.x, pared.y);
@@ -44,7 +44,7 @@ blockManager.Update = function () {
         }
     });
 };
-io.on('mapa', function (data, mapa_2d) {
+io.on('mapa', function (data) {
     let vector = data["data"];
     blockManager.widthmap = data["width"];
     let posX = 0;
@@ -65,7 +65,7 @@ io.on('mapa', function (data, mapa_2d) {
         }
 
         if (vector[i] == 1) {
-            blockManager.paredes[i] = new rectangulo(posX, posY, blockManager.w, blockManager.h);
+            blockManager.walls[i] = new rectangulo(posX, posY, blockManager.w, blockManager.h);
         }
         if (vector[i] == 0 || vector[i] == 2 || vector[i] == 3)
             blockManager.grass[i] = { x: posX, y: posY };
@@ -77,12 +77,30 @@ io.on('mapa', function (data, mapa_2d) {
     }
     io.emit('powers');
     screenManager.check.block = true;
-    blockManager.blocks2D = mapa_2d
 });
 io.on('destroyBlock', function (data) {
     if (blockManager.blocks[data]) {
         blockManager.blocks[data].dead = true;
         blockManager.animationBlocks[data].stop = false;
-
     }
 });
+io.on("MAP_REDUCE_SPACE", function (index_close) {
+    index_close.map((index) => {
+        let grass = blockManager.grass[index];
+        if (grass) {
+            blockManager.walls[index] = new rectangulo(
+                grass.x,
+                grass.y,
+                blockManager.w,
+                blockManager.h
+            );
+            let player = playerManager.personajes[playerManager.id];
+            if (player) {
+                if(player.hitbox.chocarCon(blockManager.walls[index])){
+                    io.emit("dead", player.id);
+                    io.emit("killFeed", player, player);
+                } 
+            }
+        }
+    })
+})

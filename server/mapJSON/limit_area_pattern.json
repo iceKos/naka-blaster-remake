@@ -1,0 +1,55 @@
+[
+  {
+    "round": 1,
+    "time_sec": 60
+  },
+  {
+    "round": 2,
+    "time_sec": 30
+  },
+  {
+    "round": 3,
+    "time_sec": 30
+  },
+  {
+    "round": 4,
+    "time_sec": 30
+  },
+  {
+    "round": 5,
+    "time_sec": 30
+  },
+  {
+    "round": 6,
+    "time_sec": 25
+  },
+  {
+    "round": 7,
+    "time_sec": 25
+  },
+  {
+    "round": 8,
+    "time_sec": 25
+  },
+  {
+    "round": 9,
+    "time_sec": 25
+  },
+  {
+    "round": 10,
+    "time_sec": 25
+  },
+  {
+    "round": 11,
+    "time_sec": 15
+  },
+  {
+    "round": 12,
+    "time_sec": 15
+  },
+  {
+    "round": 13,
+    "time_sec": 60,
+    "final": true
+  }
+]

@@ -18,6 +18,7 @@ var dir = {
     RIGHT: "RIGHT",
     LEFT: "LEFT"
 };
+var soundSetting = 1
 
 
 
@@ -26,6 +27,7 @@ canvas.height = window.innerHeight || document.documentElement.clientWidth || do
 function resizeCanvas() {
     canvas.width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
     canvas.height = window.innerHeight || document.documentElement.clientWidth || document.body.clientWidth;
+    buclePrincipal.ctx = canvas.getContext("2d");
     buclePrincipal.ctx.font = `1.1em 'Oswald', sans-serif`;
 }
 

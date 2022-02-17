@@ -30,40 +30,26 @@ var init_data = {
     bombas: [],
     powers: [],
     leaderboard: [],
-    map_2d: [],
     player: {},
+    limit_area_patthen: [],
     player_state: {
 
-    }
+    },
+    closeIndexBlock: [],
+    sec: 0,
+    round: 1,
+    isFinalRound: false,
+    endGame: false,
+    index_map: [],
+    border_start: {
+        x: 1,
+        y: 1
+    },
+    vectorX: [],
+    vectorY: []
 }
 
-function initialRoomData(room_id) {
 
-    if (room_data[room_id] == undefined) {
-        // TODO: generate mapa
-        let fileContent = fs.readFileSync(path.resolve(__dirname + map + 'mapa.json'), "utf8")
-        let mapa = JSON.parse(fileContent)["layers"][0];
-        let n = 0;
-        mapa['data'].forEach(layer => {
-            if (layer == 2) {
-                let number = Math.random() * 10;
-                if (number > 6) {
-                    mapa["data"][n] = 0;
-                } else {
-                    let ran_number = Math.random() * 10;
-                    if (ran_number > 6) {
-                        mapa["data"][n] = 2;
-                    } else {
-                        mapa["data"][n] = 3;
-                    }
-                }
-            }
-            n += 1;
-        });
-
-
-    }
-}
 
 app.get('/public/:roomId/:user_id', function (req, res) {
     res.sendFile(path.resolve(__dirname + public + '/index.html')); // si se pide / llama al index
@@ -74,13 +60,225 @@ server.listen(process.env.PORT || 8080, '0.0.0.0', function () {
     console.log('Start port : ' + server.address().port);
 });
 
+function posicionRandom(roomId) {
+    var j = getRndInteger(0, room_data[roomId].vectorX.length - 1);
+
+    var c = {
+        x: room_data[roomId].vectorX[j] * 32,
+        y: room_data[roomId].vectorY[j] * 32,
+    };
+
+    if (j == 0) {
+        // center of map
+        c.x = 19 * 32;
+        c.y = 15 * 32;
+    }
+    return c;
+}
+
+function genPositionCanspawn(roomId) {
+
+    var map2d = _.chunk(
+        room_data[roomId].mapa.data,
+        room_data[roomId].mapa.width
+    );
+
+    var arrayX = [];
+    var arrayY = [];
+
+    for (var level_1 = 0; level_1 < map2d.length - 1; level_1++) {
+        for (let level_2 = 0; level_2 < map2d[level_1].length - 1; level_2++) {
+            try {
+                var top = map2d[level_1 - 1][level_2];
+            } catch (error) {
+                var top = undefined;
+            }
+
+            try {
+                var left = map2d[level_1][level_2 - 1];
+            } catch (error) {
+                var left = undefined;
+            }
+
+            try {
+                var right = map2d[level_1][level_2 + 1];
+            } catch (error) {
+                var right = undefined;
+            }
+
+            try {
+                var bottom = map2d[level_1 - 1][level_2];
+            } catch (error) {
+                var bottom = undefined;
+            }
+
+            if (map2d[level_1][level_2] == 0) {
+                // can spawn
+
+                if (top != undefined && top == 0 && left != undefined && left == 0) {
+                    arrayX.push(level_2);
+                    arrayY.push(level_1);
+                    continue;
+                }
+
+                if (
+                    top != undefined &&
+                    top == 0 &&
+                    right != undefined &&
+                    right == 0
+                ) {
+                    arrayX.push(level_2);
+                    arrayY.push(level_1);
+                    continue;
+                }
+
+                if (
+                    left != undefined &&
+                    left == 0 &&
+                    bottom != undefined &&
+                    bottom == 0
+                ) {
+                    arrayX.push(level_2);
+                    arrayY.push(level_1);
+                    continue;
+                }
+
+                if (
+                    right != undefined &&
+                    right == 0 &&
+                    bottom != undefined &&
+                    bottom == 0
+                ) {
+                    arrayX.push(level_2);
+                    arrayY.push(level_1);
+                    continue;
+                }
+            }
+        }
+    }
+    room_data[roomId].vectorX = arrayX;
+    room_data[roomId].vectorY = arrayY;
+}
+
+function closePlayArea(indexData, border) {
+    let areaData = indexData;
+    let { x, y } = border;
+
+    let topBorders = [],
+        bottomBorders = [],
+        leftBorders = [],
+        rightBorders = [],
+        decreaseBorderOfRound = [];
+
+    for (let i = x; i < areaData.length - x; i++) {
+        topBorders.push(areaData[i][y]);
+        rightBorders = areaData[i].slice(x, areaData[i].length - 1);
+        leftBorders = areaData[x].slice(x, areaData[i].length - 1);
+        bottomBorders.push(areaData[i][leftBorders.length]);
+    }
+
+    decreaseBorderOfRound = [
+        ...new Set([
+            ...topBorders,
+            ...leftBorders,
+            ...rightBorders,
+            ...bottomBorders,
+        ]),
+    ];
+
+    return decreaseBorderOfRound;
+}
+
+async function initClose(round, roomId, isFinalRound) {
+    let mapIndexData = convertTo2DimensionArray(room_data[roomId].mapa);
+    room_data[roomId].index_map = mapIndexData
+    var closeIndexBlock = []
+    if (isFinalRound == true) {
+        closeIndexBlock = Array.apply(null, { length: room_data[roomId].mapa.data.length }).map(Number.call, Number)
+        room_data[roomId].closeIndexBlock = closeIndexBlock
+        room_data[roomId].mapa["data"] = Array.apply(null, { length: room_data[roomId].mapa.data.length }).map(Number.call, () => 1)
+    } else {
+        closeIndexBlock = await closePlayArea(
+            room_data[roomId].index_map,
+            room_data[roomId].border_start
+        );
+        room_data[roomId].closeIndexBlock = room_data[roomId].closeIndexBlock.concat(closeIndexBlock);
+        for (let i = 0; i < closeIndexBlock.length; i++) {
+            let dataTest = closeIndexBlock[i];
+            room_data[roomId].mapa["data"][dataTest] = 1;
+        }
+    }
+
+    //loop change data of block to change data to unmovable area
+    io.to(roomId).emit("MAP_REDUCE_SPACE", room_data[roomId].closeIndexBlock);
+
+
+    // increase border of round
+    room_data[roomId].border_start.x += 1;
+    room_data[roomId].border_start.y += 1;
+    // room_data[roomId].mapa = mapa;
+}
+
+function countDownPromise(time, round, isFinalRound, roomId) {
+    return new Promise((r, j) => {
+        if (typeof time === "number") {
+            var sec = time;
+            var updateSecInterval = setInterval(() => {
+                sec -= 1;
+                room_data[roomId].sec = sec;
+                room_data[roomId].round = round;
+                room_data[roomId].isFinalRound = isFinalRound;
+                if (room_data[roomId].endGame == true) {
+                    clearInterval(updateSecInterval);
+                }
+
+
+
+                io.to(roomId).emit("COUNTDOWN", { round, sec, isFinalRound });
+                if (sec == 0) {
+                    console.log(`Room : ${roomId} Round : ${round} [CLOSE]`);
+                    // clear round
+                    // disable function initClose
+                    initClose(round, roomId, isFinalRound);
+                    genPositionCanspawn(roomId)
+                    clearInterval(updateSecInterval);
+                    r(true);
+                }
+            }, 1000);
+        }
+    })
+}
+async function countDown(roomId) {
+    console.log(`PROCESS COUNTDOWN ROOM : ${roomId}`);
+    for (
+        let index = 0;
+        index < room_data[roomId].limit_area_patthen.length;
+        index++
+    ) {
+        if (room_data[roomId].endGame == true) {
+            break;
+        }
+        const { time_sec, round, final } = room_data[roomId].limit_area_patthen[index];
+        await countDownPromise(
+            Number(time_sec),
+            round,
+            index == room_data[roomId].limit_area_patthen.length - 1,
+            roomId
+        );
+    }
+
+    this.endGame = true
+    io.to(roomId).emit("TIME_OVER", { message: "TIME_OVER" });
+}
 
 
 function checkRoomCreate(roomId) {
     return new Promise(function (resolve, reject) {
+
         try {
             if (room_data[roomId] == undefined) { // init room data
                 room_data[roomId] = JSON.parse(JSON.stringify(init_data))
+
                 let fileContent = fs.readFileSync(path.resolve(__dirname + map + 'mapa.json'), 'utf8')
                 room_data[roomId].mapa = JSON.parse(fileContent)["layers"][0]
                 let n = 0;
@@ -100,7 +298,19 @@ function checkRoomCreate(roomId) {
                     }
                     n += 1;
                 });
-                room_data[roomId].map_2d = _.chunk(Array.from(Array(room_data[roomId].mapa.data.length).keys()), room_data[roomId].mapa.width)
+
+                var fileContentPattern = fs.readFileSync(path.resolve(__dirname + map + "limit_area_pattern.json"), "utf8")
+                room_data[roomId].limit_area_patthen = JSON.parse(fileContentPattern)
+
+                let mapIndexData = convertTo2DimensionArray(room_data[roomId].mapa);
+                room_data[roomId].index_map = mapIndexData
+                room_data[roomId].border_start = {
+                    x: 1,
+                    y: 1,
+                }
+                genPositionCanspawn(roomId)
+                // TODO: Start Count Down time
+                countDown(roomId)
                 resolve("created room")
             } else {
                 resolve("already have room")
@@ -108,6 +318,7 @@ function checkRoomCreate(roomId) {
         } catch (error) {
             reject(error)
         }
+
 
     })
 
@@ -125,7 +336,7 @@ io.on('connection', function (socket) {
                 socket.kills = 0;
                 socket.roomId = roomId
                 socket.emit('lifes', socket.lifes);
-                socket.emit('mapa', room_data[roomId].mapa, room_data[roomId].map_2d);
+                socket.emit('mapa', room_data[roomId].mapa);
                 socket.emit('kill', socket.kills);
             })
             .catch((error) => {
@@ -139,7 +350,8 @@ io.on('connection', function (socket) {
     });
     socket.on('user', function (data, pj, playerId, roomId) {
         // console.log(roomId);
-        socket.emit("newID", playerId, data, pj);
+        let randomPosition = posicionRandom(roomId);
+        socket.emit("newID", playerId, data, pj, randomPosition);
         socket.emit("allplayers", getAllPlayer(socket.id, socket.roomId));
     });
     socket.on("new_player", function (data) {
@@ -159,7 +371,7 @@ io.on('connection', function (socket) {
                 socket.emit('leaderboard', room_data[socket.roomId].leaderboard);
             }
         } else {
-            
+
             socket.disconnect()
             console.log("duplicate login Player");
         }
@@ -443,7 +655,7 @@ io.on('connection', function (socket) {
                 socket.player.numBomb = 1
                 socket.player.vel = 2
                 room_data[socket.roomId].player[socket.player.id] = socket.player
-                let c = posicionRandom();
+                let c = posicionRandom(socket.roomId);
                 cambiarPos(c.x, c.y, socket.player);
                 setTimeout(
                     function () {
@@ -453,7 +665,7 @@ io.on('connection', function (socket) {
         }
     });
     socket.on('disconnect', function (reason) {
-        
+
         if (reason === 'io server disconnect')
             socket.connect();
         else
@@ -507,16 +719,7 @@ function getPlayerID(id, roomId) {
     });
     return returnPlayer;
 }
-function posicionRandom() {
-    var vectorX = [1, 19, 37, 9, 29, 1, 19, 37, 29, 1, 19, 37];
-    var vectorY = [1, 1, 1, 7, 7, 15, 15, 15, 21, 27, 27, 27];
-    var j = getRndInteger(0, vectorX.length - 1);
-    var c = {
-        x: vectorX[j] * 32,
-        y: vectorY[j] * 32
-    }
-    return c;
-}
+
 function getLeaderBoard(roomId) {
     let player, kills;
     let players = [];
@@ -553,4 +756,27 @@ function cambiarPos(x, y, player) {
     player.hitbox.y = y;
     player.x = x - player.posHitX;
     player.y = y - player.posHitY;
+}
+
+function convertTo2DimensionArray(mapData) {
+    // define variable
+    let indexData = [];
+
+    let width = mapData["width"],
+        height = mapData["height"];
+
+    // loop for push index of array in width length
+    for (let i = 0; i < width; i++) {
+        indexData.push(i);
+        indexData[i] = [];
+
+        let heightIndexData = 0 + i;
+
+        for (let j = 0; j < height; j++) {
+            indexData[i].push(heightIndexData);
+            heightIndexData += width;
+        }
+    }
+
+    return indexData;
 }
