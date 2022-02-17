@@ -57,7 +57,7 @@ screenManager.Draw = function (ctx, screen) {
             blockManager.Draw(ctx);
             powerManager.Draw(ctx);
             bombManager.Draw(ctx);
-            playerManager.Draw(ctx);            
+            playerManager.Draw(ctx);
             ctx.restore();
             hudManager.Draw(ctx);
 
@@ -98,17 +98,31 @@ screenManager.cheking = function () {
     return this.check.img && this.check.block && this.check.power;
 }
 
-io.on('inicio', function () {
+io.on('beginning', function () {
+
     var img = document.createElement("img");
+    var el = document.createElement("div");
+    el.id = "box-dead";
     img.src = animationManager.imagenes["dead"][0].src;
-    img.id = "imagenDead";
-    $("body").append(img);
-    setTimeout(
-        function () {
-            img.remove();
-            location.reload();
-            window.location.href = window.location;
-            window.location.reload();
+    img.id = "img-dead";
+    img.width = "20%";
+    img.height = "5%";
+
+    el.append(img);
+    $("body").append(el);
+
+    if (record_status == true) {
+        setTimeout(() => {
+            mediaRecorder.stop();
         }, 4000);
+
+    }
+    // setTimeout(
+    //     function () {
+    //         img.remove();
+    //         location.reload();
+    //         window.location.href = window.location;
+    //         window.location.reload();
+    //     }, 4000);
 
 });

@@ -19,7 +19,7 @@ var dir = {
     LEFT: "LEFT"
 };
 var soundSetting = 1
-
+var record_status = false
 
 
 canvas.width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
@@ -46,6 +46,7 @@ io.on('connect_failed', function () {
     io.connect();
 });
 io.on('reconnect', function () {
+    console.log("reconnect");
     location.reload();
 });
 io.on('disconnect', function () {

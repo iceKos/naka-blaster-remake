@@ -645,7 +645,7 @@ io.on('connection', function (socket) {
                     room_data[socket.roomId].leaderboard = leader;
                     io.to(socket.roomId).emit('leaderboard', room_data[socket.roomId].leaderboard);
                 }
-                socket.emit('inicio');
+                socket.emit('beginning');
             } else {
                 // TODO : have to reset buff here
                 socket.player.dead = false;

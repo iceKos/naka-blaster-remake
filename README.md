@@ -34,7 +34,7 @@ node server/app.js
 - [x] Check Duplicate Player
 - [ ] player AFK has other player kill but never die
 - [x] add process close area
-- [ ] Record screen vdo when play game
+- [x] Record screen vdo when play game
 
 
 ### link player
