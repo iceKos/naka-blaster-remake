@@ -311,6 +311,11 @@ function checkRoomCreate(roomId) {
                 genPositionCanspawn(roomId)
                 // TODO: Start Count Down time
                 countDown(roomId)
+
+                // setInterval(() => {
+                //     console.log(room_data[roomId].player);
+                // }, 1000);
+
                 resolve("created room")
             } else {
                 resolve("already have room")
@@ -361,8 +366,9 @@ io.on('connection', function (socket) {
             socket.player = data;
             socket.player.timeShield = 10000
             socket.player.timeShieldCount = 0
-            room_data[socket.roomId].player[data.id] = data
-            socket.to(socket.roomId).broadcast.emit("new_player", data);
+            socket.player.deadTime = new Date().getTime()
+            room_data[socket.roomId].player[data.id] = socket.player
+            socket.to(socket.roomId).broadcast.emit("new_player", socket.player);
             let leader = getLeaderBoard(socket.roomId);
             if (room_data[socket.roomId].leaderboard != leader) {
                 room_data[socket.roomId].leaderboard = leader;
@@ -566,7 +572,7 @@ io.on('connection', function (socket) {
     socket.on('aumentarKill', function (playerId1, playerId2) {
         var player = getPlayerID(playerId2, socket.roomId)
         if (player) {
-            if (player.dead == false) {
+            if (player.dead == false && checkDeadTime(room_data[socket.roomId].player[player.id])) {
                 socket.kills += 1;
                 socket.emit('kill', socket.kills);
                 let leader = getLeaderBoard(socket.roomId);
@@ -582,7 +588,7 @@ io.on('connection', function (socket) {
     socket.on('killfeed', function (playerId1, playerId2) {
         var player = getPlayerID(playerId2, socket.roomId);
         if (player) {
-            if (player.dead == false) {
+            if (player.dead == false && checkDeadTime(room_data[socket.roomId].player[player.id])) {
                 io.to(socket.roomId).emit("killfeed", room_data[socket.roomId].player[playerId1], room_data[socket.roomId].player[playerId2])
             }
         }
@@ -629,6 +635,7 @@ io.on('connection', function (socket) {
         if (player) {
             player.dead = true;
             player.timeShieldCount = 0
+            player.deadTime = new Date().getTime()
             if (id == socket.player.id) {
                 socket.lifes -= 1;
                 socket.emit('lifes', socket.lifes);
@@ -654,6 +661,7 @@ io.on('connection', function (socket) {
                 socket.player.numMaxBomb = 1
                 socket.player.numBomb = 1
                 socket.player.vel = 2
+                socket.player.deadTime = new Date().getTime()
                 room_data[socket.roomId].player[socket.player.id] = socket.player
                 let c = posicionRandom(socket.roomId);
                 cambiarPos(c.x, c.y, socket.player);
@@ -779,4 +787,8 @@ function convertTo2DimensionArray(mapData) {
     }
 
     return indexData;
+}
+
+function checkDeadTime(player) {
+    return new Date().getTime() - player.deadTime >= 3000
 }

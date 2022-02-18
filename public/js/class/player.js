@@ -31,7 +31,7 @@ class player {
         this.play_sound_hit = false
         this.timeShield = timeShield
         this.timeShieldCount = timeShieldCount
-
+        this.deadTime = new Date().getTime()
         if (this.timeShieldCount >= this.timeShield) {
             this.undead = false
         }

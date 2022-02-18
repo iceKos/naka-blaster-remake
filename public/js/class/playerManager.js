@@ -375,7 +375,7 @@ playerManager.copy = function (data) {
 
 io.on('newID', function (playerId, user, pj, c) {
     playerManager.id = playerId;
-    
+
     playerManager.personajes[playerManager.id] = new player(playerManager.id, 30, -7, 2, pj, 5, 45, 25, 17, 1, 3000, 1, 10000, 0);
     playerManager.personajes[playerManager.id].user = user;
     playerManager.personajes[playerManager.id].cambiarPos(c.x, c.y);
@@ -443,19 +443,23 @@ io.on('dead', function (playerId) {
         soundDead.play()
         io.emit('delete');
     }
-    playerManager.personajes[playerId].animaciones.countReset = 0;
-    playerManager.personajes[playerId].animaciones.frames = 11;
-    playerManager.personajes[playerId].Update = function () {
-        playerManager.personajes[playerId].animaciones.stop = false;
-        playerManager.personajes[playerId].animaciones.Update(24, 29);
-        if (playerManager.personajes[playerId].animaciones.countReset == 1) {
-            delete playerManager.personajes[playerId];
-            if (camera.player.id == playerId) {
-                delete camera.player;
+
+    if (playerManager.personajes[playerId]) {
+        playerManager.personajes[playerId].animaciones.countReset = 0;
+        playerManager.personajes[playerId].animaciones.frames = 11;
+        playerManager.personajes[playerId].Update = function () {
+            playerManager.personajes[playerId].animaciones.stop = false;
+            playerManager.personajes[playerId].animaciones.Update(24, 29);
+            if (playerManager.personajes[playerId].animaciones.countReset == 1) {
+                delete playerManager.personajes[playerId];
+                if (camera.player.id == playerId) {
+                    delete camera.player;
+                }
             }
         }
+        playerManager.personajes[playerId].mov = null;
     }
-    playerManager.personajes[playerId].mov = null;
+
 });
 playerManager.posicionRandom = function () {
     var vectorX = [1, 19, 37, 9, 29, 1, 19, 37, 29, 1, 19, 37];
