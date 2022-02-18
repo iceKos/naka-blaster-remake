@@ -92,6 +92,14 @@ animationManager.LoadContent = function (callback) {
     ruta["time_ui"] = [];
     ruta["time_ui"].push("/images/time_ui.png");
     // final para cargar todas las rutas
+
+    Object.keys(ruta).map(key => {
+        ruta[key] = ruta[key].map(images => {
+            return `${pathS3}${images}`
+        })
+    })
+
+
     Object.keys(this.imagenes).forEach(element => {
         this.personajes[element] = [];
         this.personajes[element].push(ruta[element]);
@@ -99,7 +107,24 @@ animationManager.LoadContent = function (callback) {
     this.imagenes = this.createImages(this.personajes, callback);
 }
 animationManager.createImages = function (srcs, fn) {
+
     var n = 0, images = [];
+    let all_image = Object.keys(srcs).map((key) => {
+        if (srcs[key].length > 0) {
+            return srcs[key][0].length
+        } else {
+            return 0
+        }
+    }).reduce((pre, current) => {
+        return pre += current
+    }, 0)
+
+    let countLoadImage = 0
+
+
+    var progressBar = document.getElementById("myBar");
+    var width = 1;
+
     Object.keys(srcs).forEach(element => {
         var img;
         var remaining = srcs[element][0].length;
@@ -109,6 +134,10 @@ animationManager.createImages = function (srcs, fn) {
             images[element].push(img);
             img.onload = function () {
                 --remaining;
+                countLoadImage++
+                width = (countLoadImage / all_image) * 100
+                progressBar.style.width = width + "%";
+                progressBar.innerText = `${width.toFixed(1)}%`
                 if (remaining == 0 && n == Object.keys(srcs).length - 1) {
                     fn();
                 };

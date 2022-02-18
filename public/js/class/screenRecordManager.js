@@ -1,8 +1,9 @@
 
 async function KeyPress(e) {
-    e.preventDefault();
+    
     var evtobj = window.event ? event : e
     if (evtobj.keyCode == 82 && evtobj.ctrlKey) {
+        e.preventDefault();
         if (record_status == false) { // have to record
             let stream = await recordScreen();
             let mimeType = 'video/webm';

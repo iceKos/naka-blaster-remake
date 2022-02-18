@@ -3,7 +3,7 @@ let searchParams = new URLSearchParams(window.location.search);
 const data = window.location.pathname.split('/')
 var roomId = data[2]
 var playerId = data[3]
-console.log({ roomId, playerId });
+var pathS3 = `https://nakamoto-prod.s3.eu-central-1.amazonaws.com/naka_blaster`
 // variables globales
 var debug = {
     hit: false,

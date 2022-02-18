@@ -15,18 +15,25 @@ var screenManager = {
 screenManager.LoadContent = function (screen) {
     switch (screen) {
         case screenManager.screen.DESCO:
-            let span = document.createElement("span");
-            span.id = "reconectar";
-            span.append("Reconectando...");
-            $("body").append(span);
+            let div = document.createElement("div");
+            div.id = "reconnecting";
+            div.append("Reconnecting...");
+            $("body").append(div);
             break;
         case screenManager.screen.MENU:
             menuManager.LoadContent();
             break;
         case screenManager.screen.LOADING:
-            let pan = document.createElement("span");
-            pan.id = "conectando";
-            pan.append("Cargando...");
+            let pan = document.createElement("div");
+            pan.id = "connecting";
+            let divLoadding = document.createElement("div");
+            divLoadding.innerHTML = `
+            LOADDING
+            <div id="myProgress">
+                <div id="myBar">0%</div>
+            </div>
+            `
+            pan.append(divLoadding);
             $("body").append(pan);
             blockManager.LoadContent();
             animationManager.LoadContent(
@@ -68,7 +75,7 @@ screenManager.Update = function (screen, callback) {
     switch (screen) {
         case screenManager.screen.LOADING:
             if (screenManager.cheking()) {
-                document.getElementById("conectando").remove();
+                document.getElementById("connecting").remove();
                 callback(screenManager.screen.MENU);
                 console.log("¡Cargado!");
             }

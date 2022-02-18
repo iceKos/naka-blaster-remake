@@ -690,7 +690,7 @@ io.on('connection', function (socket) {
         try {
             socket.connect();
         } catch (err) {
-            console.log("Error de reconectar : " + err);
+            console.log("Error de reconnecting : " + err);
         }
     });
 });

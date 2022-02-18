@@ -1,5 +1,7 @@
 var menuManager = { pressDer: true, pressIzq: true };
 menuManager.LoadContent = function () {
+    this.overlay = document.createElement("div")
+    this.overlay.id = "screen-overlay"
     this.content = document.createElement("div");
     this.content.id = "content";
     this.divo = document.createElement("div");
@@ -71,7 +73,7 @@ menuManager.LoadContent = function () {
         io.emit('user', chance.name(), "zombie", playerId, roomId);
         buclePrincipal.screen = screenManager.screen.GAME;
         menuManager.Destroy();
-    }, 1000);
+    }, 10);
 
     // evento del clic en el boton 
     this.button.addEventListener("click", function () {
@@ -109,6 +111,7 @@ menuManager.LoadContent = function () {
         menuManager.pressIzq = e.wheelDelta > 0;
     });
     $("body").append(this.content);
+    $("body").append(this.overlay)
 
 
     if (window.location.hash) {
@@ -126,4 +129,5 @@ menuManager.UnLoadContent = function () {
 }
 menuManager.Destroy = function () {
     this.content.remove();
+    this.overlay.remove();
 }

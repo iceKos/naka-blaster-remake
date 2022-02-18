@@ -1,7 +1,0 @@
-File from: [public/images/sushi_0.png]
-
-File to: [build/images/sushi_0.png]
-
-Compression algorithm: [pngquant]
-
-Description: Error: Command failed: /Users/kos.ice/work-kos/game/naka-blaster-remake/node_modules/pngquant-bin/vendor/pngquant --quality=20 -o build/images/sushi_0.png public/images/sushi_0.png
