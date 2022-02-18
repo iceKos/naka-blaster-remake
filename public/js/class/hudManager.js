@@ -427,4 +427,5 @@ io.on("COUNTDOWN", ({ round, sec, isFinalRound }) => {
 });
 io.on("TIME_OVER", ({ message }) => {
     hudManager.time_over = true;
+    sound_alert.pause()
 });
