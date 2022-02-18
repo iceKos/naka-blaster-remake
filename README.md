@@ -39,6 +39,8 @@ node server/app.js
 
 ### link player
 
+dev
+
 room 1
 http://localhost:8080/public/1/player-id-1
 http://localhost:8080/public/1/player-id-2
@@ -50,3 +52,20 @@ http://localhost:8080/public/2/player-id-1
 http://localhost:8080/public/2/player-id-2
 http://localhost:8080/public/2/player-id-3
 http://localhost:8080/public/2/player-id-4
+
+
+prod
+
+
+
+room 1
+http://139.59.98.105:8080/public/1/player-id-1
+http://139.59.98.105:8080/public/1/player-id-2
+http://139.59.98.105:8080/public/1/player-id-3
+http://139.59.98.105:8080/public/1/player-id-4
+
+room 2
+http://139.59.98.105:8080/public/2/player-id-1
+http://139.59.98.105:8080/public/2/player-id-2
+http://139.59.98.105:8080/public/2/player-id-3
+http://139.59.98.105:8080/public/2/player-id-4

@@ -35,7 +35,7 @@
 body {
   margin: 0px;
   overflow: hidden;
-  font-family: "Oswald", sans-serif;
+  font-family: "Oswald", sans-serif
 }
 
 canvas {
@@ -76,6 +76,7 @@ div#connecting {
   font-size: 4em;
   z-index: 5;
   text-align: center;
+  font-family: "BADABB"
 }
 
 #game {
