@@ -94,12 +94,17 @@ io.on("MAP_REDUCE_SPACE", function (index_close) {
                 blockManager.w,
                 blockManager.h
             );
+            // have to check power if found have remove it
+            var power = powerManager.powers[index];
+            if (power) {
+                delete powerManager.powers[index]
+            }
             let player = playerManager.personajes[playerManager.id];
             if (player) {
-                if(player.hitbox.chocarCon(blockManager.walls[index])){
+                if (player.hitbox.chocarCon(blockManager.walls[index])) {
                     io.emit("dead", player.id);
                     io.emit("killFeed", player, player);
-                } 
+                }
             }
         }
     })

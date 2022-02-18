@@ -619,8 +619,12 @@ io.on('connection', function (socket) {
                 else if (ran <= 15) typePower = 1;
                 else if (ran <= 20) typePower = 2;
                 else if (ran <= 24) typePower = 3;
-                io.to(socket.roomId).emit('generatePosPower', { id: data, type: typePower });
-                room_data[socket.roomId].powers[data] = typePower;
+
+                if (!room_data[socket.roomId].closeIndexBlock.includes(data)) {
+                    io.to(socket.roomId).emit('generatePosPower', { id: data, type: typePower });
+                    room_data[socket.roomId].powers[data] = typePower;
+                }
+
             }
             else {
                 io.to(socket.roomId).emit('generatePosPower', { id: data, type: -1 });
