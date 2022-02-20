@@ -9,8 +9,21 @@ var hudManager = {
     isFinalRound: false,
     count_down: 99,
     round: 0,
+    buttons: [],
 };
 var play_sound_alert_status = true
+
+
+
+function isIntersect(pos, btn) {
+    if (
+        (pos.x >= btn.x && pos.x < btn.x + btn.width) &&
+        (pos.y >= btn.y && pos.y < btn.y + btn.height)
+    )
+        return true;
+    return false;
+}
+
 function renderTime(seconds) {
     var date = new Date(seconds * 1000).toISOString().substr(11, 8);
     var [hh, mm, ss] = date.split(":");
@@ -31,6 +44,40 @@ hudManager.genWord = function (length) {
         text += "0"
     }
     return text
+}
+
+hudManager.LoadContent = function () {
+    this.buttons = [
+        {
+            x: 260,
+            y: 40,
+            src: animationManager.imagenes["icon_mute"][0],
+            width: 100,
+            height: 50,
+            color: 'rgb(255,0,0)',
+            text: 'Button 1',
+            callback: function () {
+                soundSetting = !soundSetting
+
+                if (soundSetting == 1) {
+                    if (!music.overworld.playing()) {
+                        music.overworld.play();
+                    } else {
+                        music.overworld.pause();
+                    }
+                } else {
+                    music.overworld.pause();
+                }
+            },
+            load: function () {
+                if (soundSetting == 1) {
+                    this.src = animationManager.imagenes["icon_mute"][0]
+                } else {
+                    this.src = animationManager.imagenes["icon_mute"][1]
+                }
+            }
+        }
+    ]
 }
 
 hudManager.Update = function () {
@@ -313,12 +360,12 @@ hudManager.Draw = function (ctx) {
         if (this.count_down <= 10) {
 
             if (soundSetting == 0) {
-                sound_alert.pause()
+                music.sound_alert.pause()
                 play_sound_alert_status = true
             }
 
             if (play_sound_alert_status && soundSetting == 1) {
-                sound_alert.play()
+                music.sound_alert.play()
                 play_sound_alert_status = false
             }
 
@@ -330,7 +377,7 @@ hudManager.Draw = function (ctx) {
                 ctx.fillStyle = "#FFFFFF";
             }
         } else {
-            sound_alert.pause()
+            music.sound_alert.pause()
         }
 
 
@@ -353,6 +400,23 @@ hudManager.Draw = function (ctx) {
     ctx.textBaseline = "alphabetic";
     ctx.font = "20px BADABB";
     //============================= TIME UI =======================================
+
+    //============================= UI BUTTON =================================
+    this.buttons.forEach(b => {
+        ctx.drawImage(
+            b.src,
+            0,
+            0,
+            b.width,
+            b.height,
+            b.x,
+            b.y,
+            b.width,
+            b.height
+        );
+        b.load()
+    });
+    //============================= UI BUTTON =================================
 
 }
 
@@ -427,5 +491,5 @@ io.on("COUNTDOWN", ({ round, sec, isFinalRound }) => {
 });
 io.on("TIME_OVER", ({ message }) => {
     hudManager.time_over = true;
-    sound_alert.pause()
+    music.sound_alert.pause()
 });

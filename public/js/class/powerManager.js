@@ -146,7 +146,10 @@ powerManager.setPower = (indexPower, playerId) => {
 
         // TODO: Play sound level up here
         if (playerManager.id == playerId) {
-            soundLevelUp.play()
+            if (soundSetting == 1) {
+                music.soundLevelUp.play()
+            }
+
         }
     }
 

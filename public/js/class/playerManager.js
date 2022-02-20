@@ -440,7 +440,10 @@ io.on("time_out_shield", function (playerId, countTimeShield) {
 
 io.on('dead', function (playerId) {
     if (playerId == playerManager.id) {
-        soundDead.play()
+        if (soundSetting == 1) {
+            music.soundDead.play()
+        }
+
         io.emit('delete');
     }
 

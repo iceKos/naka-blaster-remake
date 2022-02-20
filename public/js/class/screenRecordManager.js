@@ -1,24 +1,27 @@
 
 async function KeyPress(e) {
-    
+
     var evtobj = window.event ? event : e
     if (evtobj.keyCode == 82 && evtobj.ctrlKey) {
         e.preventDefault();
-        if (record_status == false) { // have to record
-            let stream = await recordScreen();
-            let mimeType = 'video/webm';
-            mediaRecorder = createRecorder(stream, mimeType);
-        } else { // have record then have to stop and save data
-            mediaRecorder.stop();
-        }
+        handleScreenRecord()
+    }
+}
 
+async function handleScreenRecord() {
+    if (record_status == false) { // have to record
+        let stream = await recordScreen();
+        let mimeType = 'video/webm';
+        mediaRecorder = createRecorder(stream, mimeType);
+    } else { // have record then have to stop and save data
+        mediaRecorder.stop();
     }
 }
 
 async function recordScreen() {
     return await navigator.mediaDevices.getDisplayMedia({
         audio: false,
-        video: { mediaSource: "screen",width: 1080, height: 720 }
+        video: { mediaSource: "screen", width: 1080, height: 720 }
     });
 }
 

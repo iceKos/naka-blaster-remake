@@ -32,6 +32,18 @@ function resizeCanvas() {
 }
 
 
+canvas.addEventListener('click', (e) => {
+    const pos = {
+        x: e.clientX,
+        y: e.clientY
+    };
+    hudManager.buttons.forEach((b, i) => {
+        if (isIntersect(pos, b)) {
+            b.callback()
+        }
+    });
+});
+
 
 function getRndInteger(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;

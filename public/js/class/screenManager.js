@@ -39,9 +39,11 @@ screenManager.LoadContent = function (screen) {
             animationManager.LoadContent(
                 function () {
                     screenManager.check.img = true;
+                    hudManager.LoadContent()
                 });
             powerManager.LoadContent();
             cloudManager.LoadContent();
+            
             break;
     }
 };

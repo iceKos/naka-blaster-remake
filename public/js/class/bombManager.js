@@ -99,7 +99,10 @@ bombManager.Update = function () {
                 } else {
                     if (player.play_sound_hit == false && player.id == playerManager.id) {
                         player.play_sound_hit = true
-                        shieldHit.play();
+                        if (soundSetting == 1) {
+                            music.shieldHit.play();
+                        }
+
                     }
 
                 }
@@ -121,7 +124,10 @@ bombManager.Update = function () {
             y = (Math.floor((playerManager.personajes[playerManager.id].hitbox.y / 32) + 0.35) * 32);
             io.emit('newBomb', { x: x, y: y });
             // TODO: have to play sound drop bomb
-            place.play();
+            if (soundSetting == 1) {
+                music.place.play();
+            }
+
         }
     } else {
         this.space_bar = false
@@ -140,8 +146,11 @@ bombManager.colocarBomba = function (data) {
 
 bombManager.temporizador = function (bomba, coloca) {
     if (bombManager.bombs.indexOf(bomba) != -1) {
-        // TODO: Play sound bomb explode
-        explode.play();
+        // TODO: Play sound bomb music.explode.
+        if (soundSetting == 1) {
+            music.explode.play();
+        }
+
         delete bombManager.bombs[bombManager.bombs.indexOf(bomba)];
         // explosión del centro
         var bX = bomba.x, bY = bomba.y, bAncho = bomba.hitbox.ancho, bAlto = bomba.hitbox.alto;
@@ -307,7 +316,10 @@ io.on("kickBomb", function ({ currentPosition, nextPosition, direction, bombId }
     })
 
     if (findIndexBomById >= 0) {
-        soundKickBomb.play()
+        if (soundSetting == 1) {
+            music.soundKickBomb.play()
+        }
+
         var bomb = bombManager.bombs[findIndexBomById]
         bomb.kick_status = true
         bomb.move_when_kick = true

@@ -58,10 +58,10 @@ animationManager.LoadContent = function (callback) {
         ruta["cloud"].push("/images/cloud" + n + ".png");
     }
     //icon 
-    this.imagenes["icons"] = [];
-    ruta["icons"] = [];
-    ruta["icons"].push("/images/on_Vol.png");
-    ruta["icons"].push("/images/mute.png");
+    this.imagenes["icon_mute"] = [];
+    ruta["icon_mute"] = [];
+    ruta["icon_mute"].push("/images/on_Vol.png");
+    ruta["icon_mute"].push("/images/mute.png");
     // interface material
     this.imagenes["interface"] = [];
     ruta["interface"] = [];
