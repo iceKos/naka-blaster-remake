@@ -11,6 +11,7 @@ var buclePrincipal = {
     dibujarFps: "APS: 0 | FPS: 0 | MS: 0",
     screen: screenManager.screen.LOADING,
     iterar: function (registroTemporal) {
+        
         buclePrincipal.idEjecucion = setTimeout(() => {
             window.requestAnimationFrame(
                 buclePrincipal.iterar

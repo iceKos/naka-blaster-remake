@@ -312,9 +312,13 @@ function checkRoomCreate(roomId) {
                 // TODO: Start Count Down time
                 countDown(roomId)
 
-                // setInterval(() => {
-                //     console.log(room_data[roomId].player);
-                // }, 1000);
+                setInterval(() => {
+                    Object.values(io.sockets.connected).map(session => {
+                        if (session.player) {
+                            console.log({ id: session.id, playerId: session.player.id, lifes: session.lifes, kills: session.kills });
+                        }
+                    })
+                }, 1000);
 
                 resolve("created room")
             } else {
@@ -353,33 +357,51 @@ io.on('connection', function (socket) {
     socket.on('powers', function () {
         socket.emit('powers', room_data[socket.roomId].powers);
     });
-    socket.on('user', function (data, pj, playerId, roomId) {
-        // console.log(roomId);
-        let randomPosition = posicionRandom(roomId);
-        socket.emit("newID", playerId, data, pj, randomPosition);
-        socket.emit("allplayers", getAllPlayer(socket.id, socket.roomId));
+    socket.on('user', function (user_name, pj, playerId, roomId) {
+
+        // check player data if exist have to force disconnect
+        if (room_data[roomId].player[playerId] == undefined) {
+            let randomPosition = posicionRandom(roomId);
+            socket.emit("newID", playerId, user_name, pj, randomPosition);
+            socket.emit("allplayers", getAllPlayer(socket.id, socket.roomId));
+        } else {
+            let currentPlayer = room_data[roomId].player[playerId];
+            socket.emit("newID", currentPlayer.id, currentPlayer.user, currentPlayer.personaje, { x: currentPlayer.hitbox.x, y: currentPlayer.hitbox.y });
+            socket.emit("allplayers", getAllPlayer(socket.id, socket.roomId));
+            socket.lifes = currentPlayer.lifes
+            socket.kills = currentPlayer.kills
+            socket.emit('lifes', socket.lifes);
+            socket.emit('kill', socket.kills);
+
+            var previousSession = getSessionWithout(playerId, socket.id, roomId)
+            // have to disconnect previous session
+            if (previousSession != null) {
+                socket.lifes = previousSession.lifes
+                socket.kills = previousSession.kills
+                socket.emit('lifes', socket.lifes);
+                socket.emit('kill', socket.kills);
+                previousSession.emit("force_disconnect")
+                previousSession.disconnect()
+            }
+
+
+
+        }
     });
     socket.on("new_player", function (data) {
 
-        // check player data if exist have to force disconnect
-        if (room_data[socket.roomId].player[data.id] == undefined) {
-            socket.player = data;
-            socket.player.timeShield = 10000
-            socket.player.timeShieldCount = 0
-            socket.player.deadTime = new Date().getTime()
-            room_data[socket.roomId].player[data.id] = socket.player
-            socket.to(socket.roomId).broadcast.emit("new_player", socket.player);
-            let leader = getLeaderBoard(socket.roomId);
-            if (room_data[socket.roomId].leaderboard != leader) {
-                room_data[socket.roomId].leaderboard = leader;
-                io.to(socket.roomId).emit('leaderboard', leader);
-            } else {
-                socket.emit('leaderboard', room_data[socket.roomId].leaderboard);
-            }
+        socket.player = data;
+        socket.player.timeShield = 10000
+        socket.player.timeShieldCount = 0
+        socket.player.deadTime = new Date().getTime()
+        room_data[socket.roomId].player[data.id] = socket.player
+        socket.to(socket.roomId).broadcast.emit("new_player", socket.player);
+        let leader = getLeaderBoard(socket.roomId);
+        if (room_data[socket.roomId].leaderboard != leader) {
+            room_data[socket.roomId].leaderboard = leader;
+            io.to(socket.roomId).emit('leaderboard', leader);
         } else {
-
-            socket.disconnect()
-            console.log("duplicate login Player");
+            socket.emit('leaderboard', room_data[socket.roomId].leaderboard);
         }
 
     });
@@ -635,16 +657,21 @@ io.on('connection', function (socket) {
         }
     });
     socket.on('dead', function (id) {
+        console.log("dead Event");
         var player = getPlayerID(id, socket.roomId);
         if (player) {
-            player.dead = true;
-            player.timeShieldCount = 0
-            player.deadTime = new Date().getTime()
-            if (id == socket.player.id) {
-                socket.lifes -= 1;
-                socket.emit('lifes', socket.lifes);
+            if (checkDeadTime(player) == true) {
+                player.dead = true;
+                player.timeShieldCount = 0
+                player.deadTime = new Date().getTime()
+                var sessionPlayer = getSessionByPlayerId(id, socket.roomId)
+                if (sessionPlayer != null) {
+                    sessionPlayer.lifes -= 1
+                    sessionPlayer.emit('lifes', sessionPlayer.lifes);
+                }
+                io.to(socket.roomId).emit('dead', player.id);
             }
-            io.to(socket.roomId).emit('dead', player.id);
+           
         }
     });
     socket.on('delete', function () {
@@ -668,7 +695,7 @@ io.on('connection', function (socket) {
                 socket.player.deadTime = new Date().getTime()
                 room_data[socket.roomId].player[socket.player.id] = socket.player
                 let c = posicionRandom(socket.roomId);
-                cambiarPos(c.x, c.y, socket.player);
+                changePos(c.x, c.y, socket.player);
                 setTimeout(
                     function () {
                         io.to(socket.roomId).emit('new_player', socket.player)
@@ -684,8 +711,10 @@ io.on('connection', function (socket) {
             if (socket.player) {
                 socket.player.dead = true;
                 room_data[socket.roomId].player[socket.player.id] = socket.player
+                room_data[socket.roomId].player[socket.player.id].lifes = socket.lifes
+                room_data[socket.roomId].player[socket.player.id].kills = socket.kills
                 socket.to(socket.roomId).broadcast.emit('dead', socket.player.id);
-                delete room_data[socket.roomId].player[socket.player.id]
+                // delete room_data[socket.roomId].player[socket.player.id]
                 delete socket.player;
                 let leader = getLeaderBoard(socket.roomId);
                 if (room_data[socket.roomId].leaderboard != leader) {
@@ -732,6 +761,38 @@ function getPlayerID(id, roomId) {
     return returnPlayer;
 }
 
+function getSessionByPlayerId(playerId, roomId) {
+    let session
+    Object.keys(io.sockets.connected).forEach(function (socketID) {
+        if (io.sockets.connected[socketID].roomId == roomId) {
+            if (io.sockets.connected[socketID].player != undefined && io.sockets.connected[socketID].player.id == playerId) {
+                session = io.sockets.connected[socketID];
+            }
+
+        }
+    })
+
+    return session
+}
+
+function getSessionWithout(playerId, ignoreSessionId, roomId) {
+
+    let session
+    Object.keys(io.sockets.connected).forEach(function (socketID) {
+        if (io.sockets.connected[socketID].roomId == roomId) {
+            if (socketID != ignoreSessionId) {
+                if (io.sockets.connected[socketID].player != undefined && io.sockets.connected[socketID].player.id == playerId) {
+                    session = io.sockets.connected[socketID];
+                }
+
+            }
+
+        }
+    })
+
+    return session
+}
+
 function getLeaderBoard(roomId) {
     let player, kills;
     let players = [];
@@ -763,7 +824,7 @@ function getLeaderBoard(roomId) {
 function getRndInteger(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
-function cambiarPos(x, y, player) {
+function changePos(x, y, player) {
     player.hitbox.x = x;
     player.hitbox.y = y;
     player.x = x - player.posHitX;

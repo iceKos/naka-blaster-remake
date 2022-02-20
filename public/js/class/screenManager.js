@@ -135,3 +135,7 @@ io.on('beginning', function () {
     //     }, 4000);
 
 });
+
+io.on("force_disconnect",function(){
+    window.close();
+})

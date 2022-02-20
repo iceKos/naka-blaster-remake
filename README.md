@@ -32,7 +32,7 @@ node server/app.js
 - [x] change array player list to player objects
 - [x] separate room and data in room
 - [x] Check Duplicate Player
-- [ ] player AFK has other player kill but never die
+- [x] player AFK has other player kill but never die
 - [x] add process close area
 - [x] Record screen vdo when play game
 - [ ] add buttom record screen

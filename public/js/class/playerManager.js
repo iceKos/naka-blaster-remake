@@ -378,7 +378,7 @@ io.on('newID', function (playerId, user, pj, c) {
 
     playerManager.personajes[playerManager.id] = new player(playerManager.id, 30, -7, 2, pj, 5, 45, 25, 17, 1, 3000, 1, 10000, 0);
     playerManager.personajes[playerManager.id].user = user;
-    playerManager.personajes[playerManager.id].cambiarPos(c.x, c.y);
+    playerManager.personajes[playerManager.id].changePos(c.x, c.y);
     camera.follow(playerManager.personajes[playerManager.id]);
     io.emit("new_player", playerManager.personajes[playerManager.id]);
 });

@@ -129,7 +129,7 @@ class player {
             }
         }
     }
-    cambiarPos(x, y) {
+    changePos(x, y) {
         this.hitbox.x = x;
         this.hitbox.y = y;
         this.x = x - this.posHitX;
