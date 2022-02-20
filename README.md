@@ -37,7 +37,8 @@ node server/app.js
 - [x] Record screen vdo when play game
 - [ ] add buttom record screen
 - [x] add buttom mute sound
-
+- [ ] show dialog winner
+- [ ] save game play data
 ### link player
 
 dev
