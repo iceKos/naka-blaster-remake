@@ -315,7 +315,7 @@ function checkRoomCreate(roomId) {
                 // setInterval(() => {
                 //     Object.values(io.sockets.connected).map(session => {
                 //         if (session.player) {
-                //             console.log({ id: session.id, playerId: session.player.id, lifes: session.lifes, kills: session.kills });
+                //             console.log({ id: session.id, playerId: session.player.id, lifes: session.lifes, kills: session.kills, deadTime: session.player.deadTime });
                 //         }
                 //     })
                 // }, 1000);
@@ -334,6 +334,7 @@ function checkRoomCreate(roomId) {
 }
 
 io.on('connection', function (socket) {
+
     socket.on("join-room", function (roomId, playerId) {
 
         checkRoomCreate(roomId)
@@ -350,13 +351,15 @@ io.on('connection', function (socket) {
             })
             .catch((error) => {
                 console.log(`JOIN ROOM : ${roomId}`);
-                console.log(`ROOM STATUS : ${error}`)
+                console.log(`ROOM STATUS :
+                 ${error}`)
             })
 
     })
     socket.on('powers', function () {
         socket.emit('powers', room_data[socket.roomId].powers);
     });
+
     socket.on('user', function (user_name, pj, playerId, roomId) {
 
         // check player data if exist have to force disconnect
@@ -657,7 +660,6 @@ io.on('connection', function (socket) {
         }
     });
     socket.on('dead', function (id) {
-        console.log("dead Event");
         var player = getPlayerID(id, socket.roomId);
         if (player) {
             if (checkDeadTime(player) == true) {
@@ -671,7 +673,7 @@ io.on('connection', function (socket) {
                 }
                 io.to(socket.roomId).emit('dead', player.id);
             }
-           
+
         }
     });
     socket.on('delete', function () {
