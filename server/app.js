@@ -312,13 +312,13 @@ function checkRoomCreate(roomId) {
                 // TODO: Start Count Down time
                 countDown(roomId)
 
-                setInterval(() => {
-                    Object.values(io.sockets.connected).map(session => {
-                        if (session.player) {
-                            console.log({ id: session.id, playerId: session.player.id, lifes: session.lifes, kills: session.kills });
-                        }
-                    })
-                }, 1000);
+                // setInterval(() => {
+                //     Object.values(io.sockets.connected).map(session => {
+                //         if (session.player) {
+                //             console.log({ id: session.id, playerId: session.player.id, lifes: session.lifes, kills: session.kills });
+                //         }
+                //     })
+                // }, 1000);
 
                 resolve("created room")
             } else {
