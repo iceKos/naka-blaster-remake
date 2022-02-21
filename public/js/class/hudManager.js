@@ -52,7 +52,7 @@ hudManager.LoadContent = function () {
             x: 260,
             y: 40,
             src: animationManager.imagenes["icon_mute"][0],
-            width: 100,
+            width: 50,
             height: 50,
             color: 'rgb(255,0,0)',
             text: 'Button 1',
@@ -74,6 +74,24 @@ hudManager.LoadContent = function () {
                     this.src = animationManager.imagenes["icon_mute"][0]
                 } else {
                     this.src = animationManager.imagenes["icon_mute"][1]
+                }
+            }
+        }, {
+            x: 330,
+            y: 40,
+            src: animationManager.imagenes["record_screen"][0],
+            width: 125,
+            height: 50,
+            color: 'rgb(255,0,0)',
+            text: 'Button 1',
+            callback: function () {
+                handleScreenRecord()
+            },
+            load: function () {
+                if (record_status == true) {
+                    this.src = animationManager.imagenes["record_screen"][1]
+                } else {
+                    this.src = animationManager.imagenes["record_screen"][0]
                 }
             }
         }

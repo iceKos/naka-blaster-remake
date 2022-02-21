@@ -62,6 +62,13 @@ animationManager.LoadContent = function (callback) {
     ruta["icon_mute"] = [];
     ruta["icon_mute"].push("/images/on_Vol.png");
     ruta["icon_mute"].push("/images/mute.png");
+    
+    // btn record screen
+    this.imagenes["record_screen"] = [];
+    ruta["record_screen"] = [];
+    ruta["record_screen"].push("/images/record-screen.png");
+    ruta["record_screen"].push("/images/stop-record-screen.png");
+
     // interface material
     this.imagenes["interface"] = [];
     ruta["interface"] = [];

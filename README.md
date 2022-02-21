@@ -35,7 +35,7 @@ node server/app.js
 - [x] player AFK has other player kill but never die
 - [x] add process close area
 - [x] Record screen vdo when play game
-- [ ] add buttom record screen
+- [x] add buttom record screen
 - [x] add buttom mute sound
 - [ ] show dialog winner
 - [ ] save game play data

@@ -15,6 +15,7 @@ async function handleScreenRecord() {
         mediaRecorder = createRecorder(stream, mimeType);
     } else { // have record then have to stop and save data
         mediaRecorder.stop();
+        record_status = false
     }
 }
 
@@ -59,6 +60,7 @@ function saveFile(recordedChunks) {
     });
     let filename = window.prompt('Enter file name'),
         downloadLink = document.createElement('a');
+    downloadLink.target = "_blank"
     downloadLink.href = URL.createObjectURL(blob);
     downloadLink.download = `${filename}.webm`;
 
@@ -66,6 +68,7 @@ function saveFile(recordedChunks) {
     downloadLink.click();
     URL.revokeObjectURL(blob); // clear from memory
     document.body.removeChild(downloadLink);
+    record_status = false
 }
 
 document.onkeydown = KeyPress;
