@@ -476,7 +476,7 @@ playerManager.posicionRandom = function () {
 }
 
 playerManager.resetBuff = function () {
-    this.buffLevel.power.value = 0;
-    this.buffLevel.speed.value = 0;
-    this.buffLevel.bombs.value = 0
+    this.buffLevel.power.value = 1;
+    this.buffLevel.speed.value = 1;
+    this.buffLevel.bombs.value = 1;
 }

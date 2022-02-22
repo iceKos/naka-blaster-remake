@@ -41,6 +41,10 @@ node server/app.js
 - [ ] save game play data
 ### link player
 
+### bug
+- [ ] duplicate kill feed
+- [ ] cannot count kill score 
+
 dev
 
 room 1
