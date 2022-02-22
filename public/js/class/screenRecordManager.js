@@ -8,15 +8,17 @@ async function KeyPress(e) {
     }
 }
 
-async function handleScreenRecord() {
+// create button and call this function for record screen
+async function handleScreenRecord(cb = function () { }) {
     if (record_status == false) { // have to record
         let stream = await recordScreen();
         let mimeType = 'video/webm';
-        mediaRecorder = createRecorder(stream, mimeType);
+        mediaRecorder = createRecorder(stream, mimeType, cb);
     } else { // have record then have to stop and save data
         mediaRecorder.stop();
         record_status = false
     }
+
 }
 
 async function recordScreen() {
@@ -26,7 +28,7 @@ async function recordScreen() {
     });
 }
 
-function createRecorder(stream, mimeType) {
+function createRecorder(stream, mimeType, cb = function () { }) {
     // the stream data is stored in this array
     let recordedChunks = [];
 
@@ -35,6 +37,7 @@ function createRecorder(stream, mimeType) {
     mediaRecorder.ondataavailable = function (e) {
         if (record_status == false) {
             record_status = true
+            cb()
         }
 
         if (e.data.size > 0) {
@@ -45,6 +48,7 @@ function createRecorder(stream, mimeType) {
         saveFile(recordedChunks);
         recordedChunks = [];
         stream.getTracks().forEach(track => track.stop())
+        cb()
     };
 
 
@@ -72,3 +76,47 @@ function saveFile(recordedChunks) {
 }
 
 document.onkeydown = KeyPress;
+
+window.addEventListener('load', function () {
+    var myScript = document.querySelector('script[name="screenManager"]');
+    if (record_status != undefined) {
+
+        if (myScript) {
+            var button = document.createElement("button")
+
+            var x = myScript.getAttribute("x")
+            var y = myScript.getAttribute("y")
+            button.innerHTML = "Screen Record"
+            button.id = "btn-record-screen"
+            button.style.position = "fixed"
+            button.style.left = `${x}px`
+            button.style.top = `${y}px`
+            var body = document.getElementsByTagName("body")
+
+            // console.log(x, y, body,myScript);
+            if (body.length > 0) {
+                body[0].append(button)
+            }
+
+            button.addEventListener("click", function () {
+                handleScreenRecord(function () {
+                    console.log(record_status);
+                    if (record_status == true) {
+                        var btn = document.getElementById("btn-record-screen")
+                        btn.innerText = "Stop Record"
+                    } else {
+                        var btn = document.getElementById("btn-record-screen")
+                        btn.innerText = "Screen Record"
+                    }
+                })
+
+            })
+        } else {
+            console.warn(`Can you add Attribute name equal screenManager <script name="screenManager"></script>`)
+        }
+
+    } else {
+        console.warn("Can you create variables name record_status and set defult to true Boolean")
+    }
+
+})
