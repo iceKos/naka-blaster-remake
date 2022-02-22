@@ -16,7 +16,7 @@ var playerManager = {
         },
         speed: {
             value: 1,
-            max: 6
+            max: 5
         },
 
     }

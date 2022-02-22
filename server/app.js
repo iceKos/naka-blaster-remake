@@ -620,9 +620,16 @@ io.on('connection', function (socket) {
 
 
     socket.on('sumBomb', function () {
-        if (socket.player)
-            socket.player.numBomb += 1;
-        room_data[socket.roomId].player[socket.player.id] = socket.player
+        try {
+            if (socket.player) {
+                socket.player.numBomb += 1;
+                room_data[socket.roomId].player[socket.player.id] = socket.player
+            }
+
+        } catch (error) {
+            console.log("function sumBomb Error", socket.player);
+        }
+
     });
     socket.on('eliminatePower', function (index, player) {
         if (room_data[socket.roomId].powers[index] != -1) {
