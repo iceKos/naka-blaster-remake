@@ -7,15 +7,15 @@ var playerManager = {
     status_kick: false,
     buffLevel: {
         power: {
-            value: 0,
+            value: 1,
             max: 10
         },
         bombs: {
-            value: 0,
+            value: 1,
             max: 10
         },
         speed: {
-            value: 0,
+            value: 1,
             max: 6
         },
 
@@ -376,7 +376,7 @@ playerManager.copy = function (data) {
 io.on('newID', function (playerId, user, pj, c) {
     playerManager.id = playerId;
 
-    playerManager.personajes[playerManager.id] = new player(playerManager.id, 30, -7, 2, pj, 5, 45, 25, 17, 1, 3000, 1, 10000, 0);
+    playerManager.personajes[playerManager.id] = new player(playerManager.id, 30, -7, 3, pj, 5, 45, 25, 17, 1, 3000, 1, 10000, 0);
     playerManager.personajes[playerManager.id].user = user;
     playerManager.personajes[playerManager.id].changePos(c.x, c.y);
     camera.follow(playerManager.personajes[playerManager.id]);

@@ -597,7 +597,8 @@ io.on('connection', function (socket) {
     socket.on('aumentarKill', function (playerId1, playerId2) {
         var player = getPlayerID(playerId2, socket.roomId)
         if (player) {
-            if (player.dead == false && checkDeadTime(room_data[socket.roomId].player[player.id])) {
+            var timeDeadStatus = checkDeadTime(room_data[socket.roomId].player[player.id])
+            if (player.dead == true && timeDeadStatus) {
                 socket.kills += 1;
                 socket.emit('kill', socket.kills);
                 let leader = getLeaderBoard(socket.roomId);
@@ -613,12 +614,11 @@ io.on('connection', function (socket) {
     socket.on('killfeed', function (playerId1, playerId2) {
         var player = getPlayerID(playerId2, socket.roomId);
         if (player) {
-            if (player.dead == false && checkDeadTime(room_data[socket.roomId].player[player.id])) {
-                io.to(socket.roomId).emit("killfeed", room_data[socket.roomId].player[playerId1], room_data[socket.roomId].player[playerId2])
-            }
+            io.to(socket.roomId).emit("killfeed", room_data[socket.roomId].player[playerId1], room_data[socket.roomId].player[playerId2])
         }
-
     })
+
+
     socket.on('sumBomb', function () {
         if (socket.player)
             socket.player.numBomb += 1;
@@ -669,6 +669,7 @@ io.on('connection', function (socket) {
                 var sessionPlayer = getSessionByPlayerId(id, socket.roomId)
                 if (sessionPlayer != null) {
                     sessionPlayer.lifes -= 1
+                    sessionPlayer.player = player
                     sessionPlayer.emit('lifes', sessionPlayer.lifes);
                 }
                 io.to(socket.roomId).emit('dead', player.id);
