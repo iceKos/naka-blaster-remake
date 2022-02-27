@@ -5,9 +5,9 @@ var roomId = data[2]
 var playerId = data[3]
 
 // asset in cloud
-var pathS3 = `https://nakamoto-prod.s3.eu-central-1.amazonaws.com/naka_blaster`
+// var pathS3 = `https://nakamoto-prod.s3.eu-central-1.amazonaws.com/naka_blaster`
 // asset in local
-// var pathS3 = ``
+var pathS3 = ``
 // variables globales
 var debug = {
     hit: false,

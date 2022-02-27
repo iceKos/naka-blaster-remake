@@ -22,6 +22,12 @@ animationManager.LoadContent = function (callback) {
     ruta["shield"].push("/images/spr_shield1.png")
     ruta["shield"].push("/images/spr_shield2.png")
 
+    this.imagenes["dead_motion"] = [];
+    ruta["dead_motion"] = [];
+    for (let n = 1; n <= 17; n++) {
+        ruta["dead_motion"].push("/images/dead/dead-" + n + ".png");
+    }
+
     // cargar bomba
     this.imagenes["bomb"] = [];
     ruta["bomb"] = [];

@@ -25,6 +25,8 @@ class player {
         this.atra = false;
         this.user = "";
         this.shieldAnimation = new animation(animationManager.imagenes["shield"], 0.1)
+        this.deadMotion = new animation(animationManager.imagenes["dead_motion"],0.1)
+        this.deadMotion.stop = true
         this.shieldAnimation.stop = true
         this.undead = true
         this.settimeUndead()
@@ -67,13 +69,16 @@ class player {
         this.imagenes = animationManager.imagenes[personaje];
         this.animaciones = new animation(this.imagenes, this.speedImage);
         this.shieldAnimation = new animation(animationManager.imagenes["shield"], 0.1)
+        this.deadMotion = new animation(animationManager.imagenes["dead_motion"],0.1)
     }
     Update() {
         if (this.dead == false) {
             this.shieldAnimation.Update(0, 3)
+        }else{
+            this.deadMotion.Update(0,16)    
         }
-
-
+        
+    
         // down
         if (this.dir == dir.DOWN) {
             this.animaciones.Update(0, 5);
@@ -120,6 +125,9 @@ class player {
                     if (this.undead == true && this.dead == false) {
                         this.shieldAnimation.Draw(ctx, this.x, this.y, 500, 500, "shield");
                     }
+                    this.deadMotion.Draw(ctx, this.x, this.y, 500, 500, "dead_motion")
+
+                    
 
                     if (debug.hit) this.hitbox.Draw(ctx);
                 } else {

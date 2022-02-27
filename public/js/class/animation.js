@@ -27,6 +27,7 @@ class animation {
     Draw(ctx, x, y, w, h, mode) {
 
         if (mode == "player") {
+         
             ctx.drawImage(this.img[this.index], 0, 0, w, h, x -10, y, 54, 62);
         }
         else if(mode == "cloud"){
@@ -37,6 +38,11 @@ class animation {
             }catch(e){
             }
             
+        }else if(mode == "dead_motion"){
+            try {
+                ctx.drawImage(this.img[this.index], 0, 0, w+100, h+100, x-10, y-10, 200, 200);
+            }catch(e){
+            }
         }
         else {
             if (this.img[this.index] && mode == 'resize' && w && h) {

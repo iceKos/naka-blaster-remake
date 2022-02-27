@@ -452,8 +452,13 @@ io.on('dead', function (playerId) {
         playerManager.personajes[playerId].animaciones.frames = 11;
         playerManager.personajes[playerId].Update = function () {
             playerManager.personajes[playerId].animaciones.stop = false;
-            playerManager.personajes[playerId].animaciones.Update(24, 29);
-            if (playerManager.personajes[playerId].animaciones.countReset == 1) {
+            playerManager.personajes[playerId].animaciones.Update(28, 29);
+            playerManager.personajes[playerId].deadMotion.stop = false;
+            playerManager.personajes[playerId].deadMotion.Update(0, 16)
+            
+            if (playerManager.personajes[playerId].deadMotion.countReset == 1) {
+                playerManager.personajes[playerId].animaciones.stop = true;
+                playerManager.personajes[playerId].deadMotion.stop = true;
                 delete playerManager.personajes[playerId];
                 if (camera.player.id == playerId) {
                     delete camera.player;
